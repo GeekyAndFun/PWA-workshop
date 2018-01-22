@@ -1,0 +1,94 @@
+html,
+body {
+    font-family: 'Bungee Shade', cursive;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f0ac;
+}
+
+header {
+    text-align: center;
+    font-size: 2em;
+    background-color: #4141ac;
+    color: #fff;
+    height: 80px;
+}
+/** Flipper Icon*/
+/** https://davidwalsh.name/css-flip */
+#headerIconContainer {
+    height: 64px;
+    width: 64px;
+    vertical-align: middle;
+    display: inline-block;
+    perspective: 1000px;
+}
+
+#headerIconContainer.flip .flipper {
+    transform: rotateY(180deg);
+}
+
+#headerIconContainer img {
+    height: 64px;
+    border-radius: 50%;
+}
+.flipper {
+    transition: 0.5s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+.front,
+.back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.front {
+    z-index: 2;
+}
+.back {
+    transform: rotateY(180deg);
+}
+/** Flipper Icon -- END*/
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    font-size: 0;
+    background-color: #fff;
+    height: 50px;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+footer textarea {
+    resize: none;
+    display: inline-block;
+    width: 70%;
+    height: 100%;
+    vertical-align: top;
+    box-sizing: border-box;
+    padding: 0.5em;
+    font-size: 16px;
+    border: 0;
+    outline: 0;
+}
+footer button {
+    width: 30%;
+    height: 40px;
+    position: absolute;
+    bottom: 5px;
+    display: inline-block;
+    background: none;
+    border: 2px solid #4141ac;
+    outline: none;
+}
+@media only screen and (min-width: 400px) {
+    #headerIconContainer {
+        margin: 0 1em;
+    }
+}
+/** COLORS */
+
+/*blue: #4141ac */
