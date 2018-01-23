@@ -34,19 +34,26 @@ header {
     height: 80px;
     white-space: nowrap;
 }
-header.header--with-menu .header__text {
+header.header--with-menu {
     color: rgba(0, 0, 0, 0);
 }
+
+.header__text {
+    width: 4em;
+    display: inline-block;
+}
+
 /** Flipper Icon*/
 /** https://davidwalsh.name/css-flip */
 #headerIconContainer {
     height: 64px;
     width: 64px;
     cursor: pointer;
-    vertical-align: middle;
+    vertical-align: top;
     display: inline-block;
     perspective: 1000px;
     z-index: 1;
+    padding-top: 8px;
 }
 
 #headerIconContainer.flip .flipper {
@@ -57,6 +64,9 @@ header.header--with-menu .header__text {
 #headerIconContainer img {
     height: 64px;
     border-radius: 50%;
+}
+#headerIconContainer img:hover {
+    box-shadow: 5px 5px 20px black;
 }
 .flipper {
     transition: 0.5s;
@@ -119,6 +129,7 @@ footer textarea {
     outline: 0;
 }
 footer button {
+    font-size: 20px;
     width: 30%;
     height: 40px;
     position: absolute;
@@ -225,6 +236,14 @@ body.menu--visible footer {
     color: #f1f0ac;
 }
 /** MENU--end */
+@media only screen and (max-width: 400px) {
+    .header__text {
+        width: initial;
+    }
+    footer button {
+        font-size: 14px;
+    }
+}
 
 @media only screen and (min-width: 400px) {
     #headerIconContainer {
@@ -232,7 +251,13 @@ body.menu--visible footer {
     }
 }
 
-@media only screen and (min-width: 700px) {
+@media only screen and (min-width: 600px) {
+    header {
+        font-size: 3em;
+    }
+}
+
+@media only screen and (min-width: 750px) {
     header {
         font-size: 4em;
     }
