@@ -14,17 +14,6 @@ body {
     background-color: #e2e2e2;
 }
 
-.container {
-    max-width: 960px;
-    background-color: #f1f0ac;
-    margin: 0 auto;
-    position: relative;
-    top: 0;
-    bottom: 0;
-    overflow: auto;
-    height: calc(100% - 80px);
-}
-
 header {
     text-align: center;
     font-size: 2em;
@@ -34,13 +23,25 @@ header {
     height: 80px;
     white-space: nowrap;
 }
-header.header--with-menu {
+
+body.menu--visible header {
     color: rgba(0, 0, 0, 0);
 }
 
 .header__text {
     width: 4em;
     display: inline-block;
+}
+
+.container {
+    max-width: 960px;
+    background-color: #f1f0ac;
+    margin: 0 auto;
+    position: relative;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+    height: calc(100% - 80px);
 }
 
 /** Flipper Icon*/
@@ -54,9 +55,10 @@ header.header--with-menu {
     perspective: 1000px;
     z-index: 1;
     padding-top: 8px;
+    position: relative;
 }
 
-#headerIconContainer.flip .flipper {
+body.menu--visible #headerIconContainer .flipper {
     transform: rotateY(180deg);
     transform-origin: 50% 50%;
 }
@@ -222,8 +224,7 @@ body.menu--visible footer {
     max-width: 450px;
 }
 
-.form-group input[type='text']::-webkit-input-placeholder,
-.form-group input[type='text']::-moz-placeholder {
+.form-group input[type='text']::placeholder {
     color: #fff;
     opacity: 0.5;
 }
@@ -235,7 +236,23 @@ body.menu--visible footer {
 .attribution a {
     color: #f1f0ac;
 }
-/** MENU--end */
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 50% 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+/** RESPONSIVE-ness */
 @media only screen and (max-width: 400px) {
     .header__text {
         width: initial;
