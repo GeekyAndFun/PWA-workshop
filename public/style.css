@@ -246,7 +246,7 @@ body.menu--visible footer {
     left: 0;
     background-color: rgba(0, 0, 0, 0.9);
     color: #fff;
-    padding: 50% 0;
+    padding-top: 4em;
     text-align: center;
     font-weight: bold;
     font-size: 2em;

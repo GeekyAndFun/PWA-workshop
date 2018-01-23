@@ -10,6 +10,7 @@
     document.getElementById('headerIconContainer').addEventListener('click', function toggleMenu() {
         document.body.classList.toggle('menu--visible');
         if (overlay) {
+            window.localStorage.setItem('onboarding', 'true');            
             overlay.remove();
             overlay = null;
         }
@@ -28,7 +29,6 @@
     if (!window.localStorage.getItem('onboarding')) {
         setTimeout(() => {
             overlay.style.display = 'block';
-            window.localStorage.setItem('onboarding', 'true');
         }, ONBOARDING_DELAY);
     }
 })();
