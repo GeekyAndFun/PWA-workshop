@@ -87,25 +87,24 @@ export function setupClientDatabase() {
     const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
     let db;
 
-    clientDatabase.onupgradeneeded = function() {
-        db = clientDatabase.result;
-        const store = db.createObjectStore('AuthorStore', { keyPath: 'id' });
+    return new Promise((resolve, reject) => {
+        clientDatabase.onupgradeneeded = function() {
+            db = clientDatabase.result;
+            const store = db.createObjectStore('AuthorStore', { keyPath: 'id' });
 
-        store.createIndex('AuthorIndex', ['key']);
-    };
-
-    clientDatabase.onsuccess = function onDatabaseSuccess() {
-        if (db) {
+            store.createIndex('AuthorIndex', ['key']);
             db.close();
-        }
-        getAuthor().then(resp => {
-            author.name = resp;
-        });
-    };
+        };
 
-    clientDatabase.onerror = function onDatabaseError() {
-        window.alert("Oups! It seems you didn't allow IndexedDB...");
-    };
+        clientDatabase.onsuccess = function onDatabaseSuccess() {
+            resolve();
+            getAuthor().then(resp => {
+                author.name = resp;
+            });
+        };
+
+        clientDatabase.onerror = reject;
+    });
 }
 
 export function getAuthor() {

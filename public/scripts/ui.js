@@ -1,4 +1,4 @@
-import { getExistingMessages, onNewMessage, sendMessage, getAuthor, setAuthor } from './app.js';
+import { getExistingMessages, onNewMessage, sendMessage, setupClientDatabase, getAuthor, setAuthor } from './app.js';
 
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
@@ -37,8 +37,10 @@ function SetupUI() {
         }, 500);
     });
 
-    getAuthor().then(author => {
-        nameInput.value = author;
+    setupClientDatabase().then(() => {
+        getAuthor().then(author => {
+            nameInput.value = author;
+        });
     });
 }
 
