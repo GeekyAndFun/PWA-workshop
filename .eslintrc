@@ -9,7 +9,9 @@
         "Notification": true,
         "self": true,
         "caches": true,
-        "fetch": true
+        "fetch": true,
+        "importScripts": true,
+        "firebase": true
     },
     "rules": {
         "arrow-parens": "off",

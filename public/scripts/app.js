@@ -70,6 +70,14 @@ export function sendMessage(text) {
     if (!text) {
         return Promise.resolve();
     }
+
+    if (!isOnline && 'serviceWorker' in navigator) {
+        return navigator.serviceWorker.ready.then((reg) => {
+            console.log('trimit dar n-am net', reg);
+            reg.sync.register('sendMessage');
+        });
+    }
+
     return databaseRef.push({
         author: author.name,
         text,
