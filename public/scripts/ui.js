@@ -1,29 +1,26 @@
-import { getExistingMessages, onNewMessage, sendMessage } from './app-script.js';
+import { getExistingMessages, onNewMessage, sendMessage } from './app.js';
 
-let messagesContainer = document.getElementById('messagesWrapper');
-let textarea = document.getElementsByTagName('textarea')[0];
+const messagesContainer = document.getElementById('messagesWrapper');
+const textarea = document.getElementsByTagName('textarea')[0];
 
 function SetupUI() {
-    getExistingMessages().then(resp => {
+    getExistingMessages().then((resp) => {
         const messagesFragment = new DocumentFragment();
 
         resp.forEach(msg =>
-            messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
-        );
+            messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp))));
         messagesContainer.appendChild(messagesFragment);
 
-        onNewMessage(function displayMessage(message) {
+        onNewMessage((message) => {
             messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
         });
     });
 
-    document.getElementById('sendMessage').addEventListener('click', function onMessageSend() {
-        sendMessage(textarea.value).then(
-            resp => {
-                textarea.value = null;
-            },
-            err => console.error(err)
-        );
+    document.getElementById('sendMessage').addEventListener('click', () => {
+        sendMessage(textarea.value).then(() => {
+            textarea.value = null;
+        },
+        err => console.error(err));
     });
 }
 

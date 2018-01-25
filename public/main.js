@@ -1,8 +1,8 @@
-import SetupUI from './scripts/ui-script.js';
-import { setupServiceWorgers } from './scripts/app-script.js';
+import SetupUI from './scripts/ui.js';
+import { setupServiceWorkers } from './scripts/app.js';
 
 SetupUI();
-setupServiceWorgers();
+setupServiceWorkers();
 
 // toggleLoadingOfMessages();
 // setupMessages();
