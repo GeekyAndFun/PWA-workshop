@@ -1,17 +1,17 @@
-let databaseRef = window.firebase.database().ref('/messages');
-let messagesContainer = document.getElementById('messagesWrapper');
+const databaseRef = window.firebase.database().ref('/messages');
+const messagesContainer = document.getElementById('messagesWrapper');
 
 (function setupMessage() {
-    let messagesFragment = new DocumentFragment();
+    const messagesFragment = new DocumentFragment();
     let latestMessageId = null;
 
     /** Get the existing messages */
 
     // toggleLoadingOfMessages();
-    databaseRef.once('value', function getDatabaseOnce(snapshot) {
+    databaseRef.once('value', snapshot => {
         // toggleLoadingOfMessages();
-        snapshot.forEach(function(childSnapshot) {
-            let value = childSnapshot.val();
+        snapshot.forEach(childSnapshot => {
+            const value = childSnapshot.val();
 
             latestMessageId = childSnapshot.key;
             messagesFragment.appendChild(createDomElementForAlert(value.author, value.text, new Date(value.timestamp)));
@@ -23,8 +23,8 @@ let messagesContainer = document.getElementById('messagesWrapper');
         databaseRef
             .orderByKey()
             .startAt(latestMessageId || '')
-            .on('child_added', function(data) {
-                let value = data.val();
+            .on('child_added', data => {
+                const value = data.val();
 
                 if (data.key === latestMessageId) {
                     return;
@@ -35,8 +35,8 @@ let messagesContainer = document.getElementById('messagesWrapper');
     });
 
     //Setup name modification
-    document.getElementById('nameInput').addEventListener('input', function onNameChange(e){
-        window.localStorage.setItem('author', )
+    document.getElementById('nameInput').addEventListener('input', function onNameChange(e) {
+        window.localStorage.setItem('author');
     });
 
     // Setup message sending
@@ -55,10 +55,10 @@ let messagesContainer = document.getElementById('messagesWrapper');
 
 /** UTILITY FUNCTIONS */
 function createDomElementForAlert(author, text, dateObject = new Date()) {
-    let element = document.createElement('div');
+    const element = document.createElement('div');
     element.classList.add('msg');
 
-    let dateString = getDateString(dateObject);
+    const dateString = getDateString(dateObject);
 
     element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p>`;
     return element;
