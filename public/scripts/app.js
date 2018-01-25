@@ -1,4 +1,4 @@
-import { insertRecord } from './indexdb-wrapper.js';
+import { updateRecord, readRecord } from './indexdb-wrapper.js';
 
 const databaseRef = window.firebase.database().ref('/messages');
 
@@ -68,86 +68,30 @@ export function onNewMessage(callback) {
         });
 }
 
-export function sendMessage(text) {
+export function sendMessage(author, text) {
     if (!text) {
         return Promise.resolve();
     }
 
     if (!isOnline && 'serviceWorker' in navigator) {
         return navigator.serviceWorker.ready.then((reg) => {
-            setUnsentMessage({});
             reg.sync.register('sendMessage');
         });
     }
 
     return databaseRef.push({
-        author: author.name,
+        author,
         text,
         timestamp: Date.now()
     });
 }
 
 /** DATABASE */
-let author = {
-    name: 'John Doe',
-    hasChanged: true
-};
-
-export function setupClientDatabase() {
-    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
-    let db;
-
-    clientDatabase.onupgradeneeded = function() {
-        db = clientDatabase.result;
-        const authStore = db.createObjectStore('AuthorStore', { keyPath: 'id' });
-        authStore.createIndex('AuthorIndex', ['key']);
-
-        const unsentMsgStore = db.createObjectStore('UnsentMsgStore');
-        unsentMsgStore.createIndex('UnsentMsgStore');
-    };
-
-    clientDatabase.onsuccess = function onDatabaseSuccess() {
-        if (db) {
-            db.close();
-        }
-        getAuthor().then(resp => {
-            author.name = resp;
-        });
-    };
-
-    clientDatabase.onerror = function onDatabaseError() {
-        window.alert("Oups! It seems you didn't allow IndexedDB...");
-    };
+export function setAuthor(name) {
+    return updateRecord('AuthorStore', name, 'currentAuthor');
 }
 
 export function getAuthor() {
-    if (!author.hasChanged) {
-        return Promise.resolve(author.name);
-    }
-
-    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
-
-    return new Promise(resolve => {
-        clientDatabase.onsuccess = function() {
-            const db = this.result;
-            const tx = db.transaction('AuthorStore', 'readwrite');
-            const store = tx.objectStore('AuthorStore');
-            // const index = store.index('AuthorIndex');
-
-            const authorRetrieval = store.get('author');
-            authorRetrieval.onsuccess = function() {
-                db.close();
-                if (authorRetrieval.result) {
-                    resolve(authorRetrieval.result.name);
-                } else {
-                    resolve('John Doe');
-                }
-            };
-        };
-    });
-}
-
-
-export function setAuthor(name) {
-    return insertRecord('GeekyDatabase', 1, 'AuthorStore', { id: 'author', name });
+    // TODO: write login service and get author from there. Index db should only hold the logged user in bettween sessions
+    return readRecord('AuthorStore', 'currentAuthor').then(author => author || 'John Doe');
 }

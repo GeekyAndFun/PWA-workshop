@@ -1,9 +1,13 @@
-import SetupUI from './scripts/ui.js';
-import { setupClientDatabase, setupServiceWorkers } from './scripts/app.js';
+import { setupUI, displayAuthor } from './scripts/ui.js';
+import { setupServiceWorkers } from './scripts/app.js';
+import { setupDbStores } from './scripts/indexdb-wrapper.js';
 
-SetupUI();
+setupUI();
 setupServiceWorkers();
-setupClientDatabase();
+setupDbStores(1, [{ name: 'AuthorStore' }, { name: 'UnsentMsg' }]).then(() => {
+    displayAuthor();
+});
+
 
 // toggleLoadingOfMessages();
 // setupMessages();

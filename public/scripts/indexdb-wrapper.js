@@ -1,48 +1,94 @@
-export function insertRecord(dbName, dbVersion, storeName, data) {
+let db = null;
+
+/**
+ *
+ * @param {Array<Object<{storeName: String, config: Object}>>} storeConfigs
+ */
+export function setupDbStores(dbVersion, storeConfigs) {
+    const clientDatabase = window.indexedDB.open('GeekyDatabase', dbVersion);
+
     return new Promise((resolve, reject) => {
-        const clientDatabase = window.indexedDB.open(dbName, dbVersion);
-        clientDatabase.onsuccess = function() {
-            const db = clientDatabase.result;
-            const tx = db.transaction(storeName, 'readwrite');
-            const store = tx.objectStore(storeName);
+        clientDatabase.onupgradeneeded = function(e) {
+            storeConfigs.forEach((storeConfig) => {
+                if (!e.target.result.objectStoreNames.contains(storeConfig.name)) {
+                    e.target.result.createObjectStore(storeConfig.name, storeConfig.config);
+                }
+            });
+        };
 
-            store.put(data);
+        clientDatabase.onsuccess = function onDatabaseSuccess(e) {
+            db = e.target.result;
+            resolve();
+        };
 
-            tx.oncomplete = function() {
-                db.close();
-                resolve();
-            };
-            tx.onerror = function() {
-                db.close();
-                reject();
-            };
+        clientDatabase.onerror = reject;
+    });
+}
+
+export function insertRecord(storeName, data, key) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const authStore = transaction.objectStore(storeName);
+
+        const request = authStore.add(data, key);
+
+        request.onerror = function() {
+            reject();
+        };
+
+        request.onsuccess = function() {
+            resolve();
         };
     });
 }
 
-export function getRecord() {
-    if (!author.hasChanged) {
-        return Promise.resolve(author.name);
-    }
+export function updateRecord(storeName, data, key) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const authStore = transaction.objectStore(storeName);
 
-    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
+        const request = authStore.put(data, key);
 
-    return new Promise(resolve => {
-        clientDatabase.onsuccess = function() {
-            const db = this.result;
-            const tx = db.transaction('AuthorStore', 'readwrite');
-            const store = tx.objectStore('AuthorStore');
-            // const index = store.index('AuthorIndex');
+        request.onerror = function() {
+            reject();
+        };
 
-            const authorRetrieval = store.get('author');
-            authorRetrieval.onsuccess = function() {
-                db.close();
-                if (authorRetrieval.result) {
-                    resolve(authorRetrieval.result.name);
-                } else {
-                    resolve('John Doe');
-                }
-            };
+        request.onsuccess = function() {
+            resolve();
+        };
+    });
+}
+
+export function readRecord(storeName, key) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readonly');
+        const authStore = transaction.objectStore(storeName);
+
+        const request = authStore.get(key);
+
+        request.onerror = function() {
+            reject();
+        };
+
+        request.onsuccess = function(e) {
+            resolve(e.target.result);
+        };
+    });
+}
+
+export function deleteRecord(storeName, key) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readonly');
+        const authStore = transaction.objectStore(storeName);
+
+        const request = authStore.delete(key);
+
+        request.onerror = function() {
+            reject();
+        };
+
+        request.onsuccess = function() {
+            resolve();
         };
     });
 }
