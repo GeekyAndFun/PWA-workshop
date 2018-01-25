@@ -7,7 +7,11 @@
         "window": true,
         "document": true,
         "navigator": true,
-        "DocumentFragment": true
+        "DocumentFragment": true,
+        "Notification": true,
+        "self": true,
+        "caches": true,
+        "fetch": true
     },
     "rules": {
         "max-len": [

@@ -1,5 +1,5 @@
 import SetupUIIife from './ui-script.js';
-import { setupServiceWorgers } from './app-script.js';
+import { setupServiceWorkers } from './app-script.js';
 
-setupServiceWorgers();
+setupServiceWorkers();
 SetupUIIife();
