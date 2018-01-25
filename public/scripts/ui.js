@@ -1,7 +1,8 @@
-import { getExistingMessages, onNewMessage, sendMessage, setAuthor } from './app.js';
+import { getExistingMessages, onNewMessage, sendMessage, getAuthor, setAuthor } from './app.js';
 
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
+const nameInput = document.getElementById('nameInput');
 
 function SetupUI() {
     getExistingMessages().then(resp => {
@@ -27,13 +28,17 @@ function SetupUI() {
     });
 
     let nameChangeTimeout;
-    document.getElementById('nameInput').addEventListener('input', function onNameChange() {
+    nameInput.addEventListener('input', function onNameChange() {
         if (nameChangeTimeout !== undefined) {
             window.clearTimeout(nameChangeTimeout);
         }
         nameChangeTimeout = setTimeout(() => {
             setAuthor(this.value);
         }, 500);
+    });
+
+    getAuthor().then(author => {
+        nameInput.value = author;
     });
 }
 

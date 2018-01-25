@@ -108,7 +108,7 @@ export function setupClientDatabase() {
     };
 }
 
-function getAuthor() {
+export function getAuthor() {
     if (!author.hasChanged) {
         return Promise.resolve(author.name);
     }
