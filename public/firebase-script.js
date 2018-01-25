@@ -34,7 +34,23 @@ let messagesContainer = document.getElementById('messagesWrapper');
             });
     });
 
+    //Setup name modification
+    document.getElementById('nameInput').addEventListener('input', function onNameChange(e){
+        window.localStorage.setItem('author', )
+    });
+
     // Setup message sending
+    let textarea = document.getElementsByTagName('textarea')[0];
+    document.getElementById('sendMessage').addEventListener('click', function onMessageSend() {
+        databaseRef
+            .push({
+                author: window.localStorage.getItem('author'),
+                text: textarea.value,
+                timestamp: Date.now()
+            })
+            .then(resp => (textarea.value = null))
+            .catch(err => console.error(err));
+    });
 })();
 
 /** UTILITY FUNCTIONS */
