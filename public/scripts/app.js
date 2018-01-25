@@ -1,4 +1,5 @@
 const databaseRef = window.firebase.database().ref('/messages');
+const tokensRef = window.firebase.database().ref('/tokens');
 
 let latestMessageId = null;
 let isOnline = true;
@@ -8,6 +9,8 @@ const updateOnlineStatus = () => {
     isOnline = navigator.onLine;
 };
 
+console.log('ceva 2 ceva');
+
 window.addEventListener('load', () => {
     window.addEventListener('offline', updateOnlineStatus);
     window.addEventListener('online', updateOnlineStatus);
@@ -15,24 +18,27 @@ window.addEventListener('load', () => {
 
 export const setupServiceWorkers = () => {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('../../geeky-service-worker.js').then(
+        // navigator.serviceWorker.register('../../geeky-service-worker.js').then(
+        navigator.serviceWorker.register('../../service-worker.js').then(
             registration => {
-                console.log(`ServiceWorker registration successful with scope: ${registration.scope}`);
+                // const messaging = firebase.messaging();
+                // messaging.useServiceWorker(registration);
+                // messaging
+                //     .requestPermission()
+                //     .then(() => {
+                //         // pushCheckbox.checked = true;
+                //         messaging.getToken().then(token => {
+                //             console.log(token);
+                //         });
+                //     })
+                //     .catch(() => {
+                //         console.error('No permission...');
+                //     });
             },
             err => {
                 console.error(`Service Worker failed ${err}`);
             }
         );
-
-        // new Promise(((resolve, reject) => {
-        //     Notification.requestPermission((result) => {
-        //         if (result !== 'granted') return reject(Error('Denied notification permission'));
-        //         resolve();
-        //     });
-        // })).then(() => navigator.serviceWorker.ready).then((reg) => {
-        //     console.log(reg);
-        //     reg.sync.register('syncTest');
-        // });
     }
 };
 
@@ -72,7 +78,7 @@ export function sendMessage(text) {
     }
 
     if (!isOnline && 'serviceWorker' in navigator) {
-        return navigator.serviceWorker.ready.then((reg) => {
+        return navigator.serviceWorker.ready.then(reg => {
             console.log('trimit dar n-am net', reg);
             reg.sync.register('sendMessage');
         });

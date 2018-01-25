@@ -54,6 +54,7 @@
                 "multiline": true
             }
         ],
+        "no-restricted-globals": "off",
         "func-names": 0,
         "import/extensions": ["error", "always"]
     }
