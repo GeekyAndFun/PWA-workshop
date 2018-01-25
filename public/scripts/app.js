@@ -1,3 +1,5 @@
+import { insertRecord } from './indexdb-wrapper.js';
+
 const databaseRef = window.firebase.database().ref('/messages');
 
 let latestMessageId = null;
@@ -73,7 +75,7 @@ export function sendMessage(text) {
 
     if (!isOnline && 'serviceWorker' in navigator) {
         return navigator.serviceWorker.ready.then((reg) => {
-            console.log('trimit dar n-am net', reg);
+            setUnsentMessage({});
             reg.sync.register('sendMessage');
         });
     }
@@ -97,9 +99,11 @@ export function setupClientDatabase() {
 
     clientDatabase.onupgradeneeded = function() {
         db = clientDatabase.result;
-        const store = db.createObjectStore('AuthorStore', { keyPath: 'id' });
+        const authStore = db.createObjectStore('AuthorStore', { keyPath: 'id' });
+        authStore.createIndex('AuthorIndex', ['key']);
 
-        store.createIndex('AuthorIndex', ['key']);
+        const unsentMsgStore = db.createObjectStore('UnsentMsgStore');
+        unsentMsgStore.createIndex('UnsentMsgStore');
     };
 
     clientDatabase.onsuccess = function onDatabaseSuccess() {
@@ -125,7 +129,7 @@ export function getAuthor() {
 
     return new Promise(resolve => {
         clientDatabase.onsuccess = function() {
-            const db = clientDatabase.result;
+            const db = this.result;
             const tx = db.transaction('AuthorStore', 'readwrite');
             const store = tx.objectStore('AuthorStore');
             // const index = store.index('AuthorIndex');
@@ -143,23 +147,7 @@ export function getAuthor() {
     });
 }
 
+
 export function setAuthor(name) {
-    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
-    clientDatabase.onsuccess = function() {
-        const db = clientDatabase.result;
-        const tx = db.transaction('AuthorStore', 'readwrite');
-        const store = tx.objectStore('AuthorStore');
-
-        store.put({ id: 'author', name });
-
-        tx.oncomplete = function() {
-            if (name !== author.name) {
-                author = {
-                    name,
-                    hasChanged: true
-                };
-            }
-            db.close();
-        };
-    };
+    return insertRecord('GeekyDatabase', 1, 'AuthorStore', { id: 'author', name });
 }
