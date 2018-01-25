@@ -1,10 +1,10 @@
-import { getExistingMessages, onNewMessage, sendMessage, setupClientDatabase, getAuthor, setAuthor } from './app.js';
+import { getExistingMessages, onNewMessage, sendMessage, getAuthor, setAuthor } from './app.js';
 
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
 const nameInput = document.getElementById('nameInput');
 
-function SetupUI() {
+export function setupUI() {
     getExistingMessages().then(resp => {
         const messagesFragment = new DocumentFragment();
 
@@ -19,7 +19,9 @@ function SetupUI() {
     });
 
     document.getElementById('sendMessage').addEventListener('click', () => {
-        sendMessage(textarea.value).then(
+        // TODO: get the user from the login service. indexdb should only be used to log in the user if there was an active session
+        // before closing the app last time
+        sendMessage(nameInput.value, textarea.value).then(
             () => {
                 textarea.value = null;
             },
@@ -27,6 +29,7 @@ function SetupUI() {
         );
     });
 
+    // TODO: write a debonucer and re-use
     let nameChangeTimeout;
     nameInput.addEventListener('input', function onNameChange() {
         if (nameChangeTimeout !== undefined) {
@@ -36,15 +39,14 @@ function SetupUI() {
             setAuthor(this.value);
         }, 500);
     });
-
-    setupClientDatabase().then(() => {
-        getAuthor().then(author => {
-            nameInput.value = author;
-        });
+}
+export function displayAuthor() {
+    // TODO: get the user from the login service. indexdb should only be used to log in the user if there was an active session
+    // before closing the app last time
+    getAuthor().then(author => {
+        nameInput.value = author;
     });
 }
-
-export default SetupUI;
 
 /** Utility Functions */
 function createMessageDOM(author, text, dateObject = new Date()) {
