@@ -1,5 +1,9 @@
-import SetupUIIife from './ui-script.js';
-import { setupServiceWorgers } from './app-script.js';
+import SetupUI from './scripts/ui-script.js';
+import { setupServiceWorgers } from './scripts/app-script.js';
 
+SetupUI();
 setupServiceWorgers();
-SetupUIIife();
+
+// toggleLoadingOfMessages();
+// setupMessages();
+// toggleLoadingOfMessages();

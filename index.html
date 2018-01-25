@@ -17,8 +17,8 @@
         <span class="header__text">Geek</span>
         <div id="headerIconContainer">
             <div class="flipper">
-                <img class="front" src="public/icon.png" alt="Geeky & Fun logo" />
-                <img class="back" src="public/icon--flipped.png" alt="Geeky & Fun logo" />
+                <img class="front" src="public/images/icon.png" alt="Geeky & Fun logo" />
+                <img class="back" src="public/images/icon--flipped.png" alt="Geeky & Fun logo" />
             </div>
         </div>
         <span class="header__text">Alert</span>
@@ -27,10 +27,7 @@
         <div id="messagesWrapper"></div>
         <footer>
             <textarea placeholder="What are you thinking..."></textarea>
-            <<<<<<< HEAD <button type="button" id="sendMessage">⚡ Alert ⚡</button>
-                =======
-                <button id="sendMessage" type="button">⚡ Alert ⚡</button>
-                >>>>>>> aba09bc6eaf80ec8da532aedb60dc45093899551
+            <button id="sendMessage" type="button">⚡ Alert ⚡</button>
         </footer>
         <div id="menu">
             <h1>
@@ -39,21 +36,21 @@
             </h1>
             <ol class="menu__ranks">
                 <li class="rank">
-                    <img class="rank__icon" src="public/icon.png" />
+                    <img class="rank__icon" src="public/images/icon.png" />
                     <p class="rank__name secondary-font">
                         <span class="rank__title">Geek God</span>
                         <span class="rank__threshold">2000 geek points</span>
                     </p>
                 </li>
                 <li class="rank rank--is-current">
-                    <img class="rank__icon" src="public/icon.png" />
+                    <img class="rank__icon" src="public/images/icon.png" />
                     <p class="rank__name secondary-font">
                         <span class="rank__title">Geek Master</span>
                         <span class="rank__threshold">1000 geek points</span>
                     </p>
                 </li>
                 <li class="rank">
-                    <img class="rank__icon" src="public/icon.png" />
+                    <img class="rank__icon" src="public/images/icon.png" />
                     <p class="rank__name secondary-font">
                         <span class="rank__title">Geek</span>
                         <span class="rank__threshold">500 geek points</span>
@@ -75,9 +72,8 @@
     <div id="overlay">
         Click on the icon to toggle the menu!!!
     </div>
-    <script src="/public/main.js" type="module"></script>
+    <script src="./public/scripts/pre-data.js" type="text/javascript"></script>
 
-    <!-- FIREBASE-start -->
     <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     <script>
         // Initialize Firebase
@@ -91,7 +87,8 @@
         };
         firebase.initializeApp(config);
     </script>
-    <!-- FIREBASE-end -->
+    <script src="./public/main.js" type="module"></script>
+
 </body>
 
 </html>
