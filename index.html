@@ -24,20 +24,7 @@
         <span class="header__text">Alert</span>
     </header>
     <div class="container">
-        <div class="messages-wrapper">
-            <div class="msg">
-                <p class="msg__text"> Guys, Angular 5 is out right NOW!!!! </p>
-                <p class="mesg__author"> Pava | 12:03 PM </p>
-            </div>
-            <div class="msg">
-                <p class="msg__text"> Sorry Pava, Ella has just eaten a Cactus! Fuck Angular, I'm taking PICTURES of this 🌵🌵🌵!!! </p>
-                <p class="mesg__author"> Gagiu | 12:07 PM </p>
-            </div>
-            <div class="msg">
-                <p class="msg__text"> Holy MOLY!!! I'm bringing the film camera! Hold on! </p>
-                <p class="mesg__author"> Badea | 12:08 PM </p>
-            </div>
-        </div>
+        <div id="messagesWrapper"></div>
         <footer>
             <textarea placeholder="What are you thinking..."></textarea>
             <button id="sendMessage" type="button">⚡ Alert ⚡</button>
@@ -85,7 +72,30 @@
     <div id="overlay">
         Click on the icon to toggle the menu!!!
     </div>
+<<<<<<< HEAD
     <script src="/public/main.js" type="module"></script>
+=======
+    <script src="./public/ui-script.js" type="text/javascript"></script>
+
+    <!-- FIREBASE-start -->
+    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4",
+            authDomain: "geek-alert.firebaseapp.com",
+            databaseURL: "https://geek-alert.firebaseio.com",
+            projectId: "geek-alert",
+            storageBucket: "",
+            messagingSenderId: "1044469279944"
+        };
+        firebase.initializeApp(config);
+    </script>
+    <!-- FIREBASE-end -->
+
+    <script src="./public/app-script.js" type="text/javascript"></script>
+    <script src="./public/firebase-script.js" type="text/javascript"></script>
+>>>>>>> 22e57c97a60addf5778aacef6464f95200dd3a34
 </body>
 
 </html>
