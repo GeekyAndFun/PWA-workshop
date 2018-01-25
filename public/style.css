@@ -90,7 +90,7 @@ body.menu--visible #headerIconContainer .flipper {
 }
 /** Flipper Icon -- END*/
 
-.messages-wrapper {
+#messagesWrapper {
     padding: 2em;
     box-sizing: border-box;
 }
