@@ -5,8 +5,9 @@ self.addEventListener('install', (event) => {
         console.log(cache, 'ce plm');
         return cache.addAll([
             '/public/main.js',
-            '/public/app-script.js',
-            '/public/firebase-script.js',
+            '/public/scripts/app.js',
+            '/public/scripts/ui.js',
+            '/public/scripts/pre-data-ui.js',
         ]);
     }));
 });
