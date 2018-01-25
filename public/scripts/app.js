@@ -1,4 +1,5 @@
 const databaseRef = window.firebase.database().ref('/messages');
+
 let latestMessageId = null;
 let isOnline = true;
 
@@ -14,12 +15,14 @@ window.addEventListener('load', () => {
 
 export const setupServiceWorkers = () => {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('../../geeky-service-worker.js').then((registration) => {
-            console.log(`ServiceWorker registration successful with scope: ${registration.scope}`);
-        },
-        (err) => {
-            console.error(`Service Worker failed ${err}`);
-        });
+        navigator.serviceWorker.register('../../geeky-service-worker.js').then(
+            registration => {
+                console.log(`ServiceWorker registration successful with scope: ${registration.scope}`);
+            },
+            err => {
+                console.error(`Service Worker failed ${err}`);
+            }
+        );
 
         // new Promise(((resolve, reject) => {
         //     Notification.requestPermission((result) => {
@@ -34,11 +37,11 @@ export const setupServiceWorkers = () => {
 };
 
 export function getExistingMessages() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
         const messages = [];
 
-        databaseRef.once('value', (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
+        databaseRef.once('value', snapshot => {
+            snapshot.forEach(childSnapshot => {
                 const value = childSnapshot.val();
 
                 latestMessageId = childSnapshot.key;
@@ -54,7 +57,7 @@ export function onNewMessage(callback) {
     return databaseRef
         .orderByKey()
         .startAt(latestMessageId || '')
-        .on('child_added', (data) => {
+        .on('child_added', data => {
             const value = data.val();
 
             if (data.key !== latestMessageId) {
@@ -76,8 +79,87 @@ export function sendMessage(text) {
     }
 
     return databaseRef.push({
-        author: window.localStorage.getItem('author'),
+        author: author.name,
         text,
-        timestamp: Date.now(),
+        timestamp: Date.now()
     });
+}
+
+/** DATABASE */
+let author = {
+    name: 'John Doe',
+    hasChanged: true
+};
+
+export function setupClientDatabase() {
+    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
+    let db;
+
+    clientDatabase.onupgradeneeded = function() {
+        db = clientDatabase.result;
+        const store = db.createObjectStore('AuthorStore', { keyPath: 'id' });
+
+        store.createIndex('AuthorIndex', ['key']);
+    };
+
+    clientDatabase.onsuccess = function onDatabaseSuccess() {
+        if (db) {
+            db.close();
+        }
+        getAuthor().then(resp => {
+            author.name = resp;
+        });
+    };
+
+    clientDatabase.onerror = function onDatabaseError() {
+        window.alert("Oups! It seems you didn't allow IndexedDB...");
+    };
+}
+
+export function getAuthor() {
+    if (!author.hasChanged) {
+        return Promise.resolve(author.name);
+    }
+
+    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
+
+    return new Promise(resolve => {
+        clientDatabase.onsuccess = function() {
+            const db = clientDatabase.result;
+            const tx = db.transaction('AuthorStore', 'readwrite');
+            const store = tx.objectStore('AuthorStore');
+            // const index = store.index('AuthorIndex');
+
+            const authorRetrieval = store.get('author');
+            authorRetrieval.onsuccess = function() {
+                db.close();
+                if (authorRetrieval.result) {
+                    resolve(authorRetrieval.result.name);
+                } else {
+                    resolve('John Doe');
+                }
+            };
+        };
+    });
+}
+
+export function setAuthor(name) {
+    const clientDatabase = window.indexedDB.open('GeekyDatabase', 1);
+    clientDatabase.onsuccess = function() {
+        const db = clientDatabase.result;
+        const tx = db.transaction('AuthorStore', 'readwrite');
+        const store = tx.objectStore('AuthorStore');
+
+        store.put({ id: 'author', name });
+
+        tx.oncomplete = function() {
+            if (name !== author.name) {
+                author = {
+                    name,
+                    hasChanged: true
+                };
+            }
+            db.close();
+        };
+    };
 }

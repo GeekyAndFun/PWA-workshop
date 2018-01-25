@@ -222,6 +222,7 @@ body.menu--visible footer {
     font-size: 1em;
     width: 80%;
     max-width: 450px;
+    color: #fff;
 }
 
 .form-group input[type='text']::placeholder {

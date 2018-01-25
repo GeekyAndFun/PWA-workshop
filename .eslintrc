@@ -1,8 +1,6 @@
 {
     "extends": "airbnb",
-    "plugins": [
-        "import"
-    ],
+    "plugins": ["import"],
     "globals": {
         "window": true,
         "document": true,
@@ -16,14 +14,12 @@
         "firebase": true
     },
     "rules": {
-        "max-len": [
-            "warn",
-            200
-        ],
-        "arrow-body-style": [
-            "error",
-            "as-needed"
-        ],
+        "arrow-parens": "off",
+        "comma-dangle": "off",
+        "no-use-before-define": "off",
+        "no-alert": "off",
+        "max-len": ["warn", 200],
+        "arrow-body-style": ["error", "as-needed"],
         "indent": [
             "error",
             4,
@@ -51,10 +47,7 @@
         ],
         "linebreak-style": 0,
         "no-confusing-arrow": 0,
-        "function-paren-newline": [
-            "error",
-            "never"
-        ],
+        "function-paren-newline": "off",
         "object-curly-newline": [
             "error",
             {
