@@ -11,7 +11,7 @@ const updateOnlineStatus = () => {
     isOnline = navigator.onLine;
 };
 
-console.log('ceva 2 ceva');
+console.log('am schimbat!');
 
 window.addEventListener('load', () => {
     window.addEventListener('offline', updateOnlineStatus);
@@ -20,8 +20,7 @@ window.addEventListener('load', () => {
 
 export const setupServiceWorkers = () => {
     if ('serviceWorker' in navigator) {
-        // navigator.serviceWorker.register('../../geeky-service-worker.js').then(
-        navigator.serviceWorker.register('../../service-worker.js').then(
+        navigator.serviceWorker.register('../../geeky-service-worker.js').then(
             registration => {
                 // const messaging = firebase.messaging();
                 // messaging.useServiceWorker(registration);
@@ -80,7 +79,7 @@ export function sendMessage(author, text) {
     }
 
     if (!isOnline && 'serviceWorker' in navigator) {
-        return navigator.serviceWorker.ready.then((reg) => {
+        return navigator.serviceWorker.ready.then(reg => {
             reg.sync.register('sendMessage');
         });
     }

@@ -8,7 +8,6 @@ setupDbStores(1, [{ name: 'AuthorStore' }, { name: 'UnsentMsg' }]).then(() => {
     displayAuthor();
 });
 
-
 // toggleLoadingOfMessages();
 // setupMessages();
 // toggleLoadingOfMessages();

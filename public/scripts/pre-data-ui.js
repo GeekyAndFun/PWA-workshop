@@ -6,6 +6,9 @@ let footer = document.getElementsByTagName('footer')[0];
 let overlay = document.getElementById('overlay');
 let textarea = document.getElementsByTagName('textarea')[0];
 
+console.log('ceva doi de SSS !!!');
+console.log('ceva doi de SSS !!!');
+
 document.getElementById('headerIconContainer').addEventListener('click', () => {
     document.body.classList.toggle('menu--visible');
     if (overlay) {
