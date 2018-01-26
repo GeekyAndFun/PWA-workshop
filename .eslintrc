@@ -11,7 +11,9 @@
         "caches": true,
         "fetch": true,
         "importScripts": true,
-        "firebase": true
+        "firebase": true,
+        "IndexedDb": true,
+        "indexedDB": true
     },
     "rules": {
         "arrow-parens": "off",

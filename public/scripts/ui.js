@@ -1,4 +1,5 @@
-import { getExistingMessages, onNewMessage, sendMessage, getAuthor, setAuthor } from './app.js';
+import { getAuthor, setAuthor } from './app.js';
+import { getExistingMessages, onNewMessage, sendMessage } from './messaging-service.js';
 
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];

@@ -2,7 +2,7 @@ importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-self.importScripts('./public/scripts/utils.js');
+importScripts('./indexeddb.js');
 
 /** Caching */
 const CACHE_NAME = 'geekyResources';
@@ -58,12 +58,13 @@ firebase.initializeApp(config);
 
 const databaseRef = firebase.database().ref('/messages');
 
-function sendMessage() {
-    return databaseRef.push({
-        author: 'badea',
-        text: 'hamster din offline ',
-        timestamp: Date.now()
-    });
+async function sendMessage() {
+    await IndexedDb.setupDbConnection('GeekyDatabase', 1);
+    const unsentMessages = await IndexedDb.readRecords('UnsentMsg');
+
+    return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
+        IndexedDb.deleteRecord('UnsentMsg', msg.timestamp);
+    })));
 }
 
 self.addEventListener('sync', event => {

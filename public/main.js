@@ -1,10 +1,14 @@
 import { setupUI, displayAuthor } from './scripts/ui.js';
-import { setupServiceWorkers } from './scripts/app.js';
-import { setupDbStores } from './scripts/indexdb-wrapper.js';
+import { setupServiceWorker } from './scripts/app.js';
+
+const indexedDbStoreConfigs = [
+    { name: 'AuthorStore' },
+    { name: 'UnsentMsg', config: { keyPath: 'timestamp' } },
+];
 
 setupUI();
-setupServiceWorkers();
-setupDbStores(1, [{ name: 'AuthorStore' }, { name: 'UnsentMsg' }]).then(() => {
+setupServiceWorker();
+IndexedDb.setupDbStores('GeekyDatabase', 1, indexedDbStoreConfigs).then(() => {
     displayAuthor();
 });
 
