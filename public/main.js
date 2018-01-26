@@ -12,7 +12,6 @@ IndexedDb.setupDbStores('GeekyDatabase', 1, indexedDbStoreConfigs).then(() => {
     displayAuthor();
 });
 
-
 // toggleLoadingOfMessages();
 // setupMessages();
 // toggleLoadingOfMessages();

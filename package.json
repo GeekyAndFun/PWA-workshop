@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "light-server -s .",
-    "sw:build": "sw-precache --config=./sw-precache-config.js --verbose"
+    "sw:build": "node sw-precache-config.js"
   },
   "private": false,
   "devDependencies": {

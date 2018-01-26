@@ -1,5 +1,5 @@
 const databaseRef = window.firebase.database().ref('/messages');
-// const tokensRef = window.firebase.database().ref('/tokens');
+const tokensRef = window.firebase.database().ref('/tokens');
 
 let latestMessageId = null;
 
@@ -21,13 +21,21 @@ export function setUpMessagingPushNotifications(registration) {
         .requestPermission()
         .then(() => {
             // pushCheckbox.checked = true;
+
             messaging.getToken().then(token => {
+                firebase
+                    .database()
+                    .ref(`tokens/${token}`)
+                    .set(true);
+
                 console.log(token);
             });
         })
         .catch(() => {
             console.error('No permission...');
         });
+
+    messaging.onMessage(e => console.log(e));
 }
 
 export function getExistingMessages() {
