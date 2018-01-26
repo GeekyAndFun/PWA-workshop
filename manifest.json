@@ -2,7 +2,7 @@
   "name": "Geek Alert",
   "short_name": "Geek Alert",
   "theme_color": "#4141ac",
-  "background_color": "#e2e2e2",
+  "background_color": "#b1fcf8",
   "display": "fullscreen",
   "orientation": "portrait",
   "scope": ".",
