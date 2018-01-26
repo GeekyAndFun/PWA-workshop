@@ -13,7 +13,8 @@
         "importScripts": true,
         "firebase": true,
         "IndexedDb": true,
-        "indexedDB": true
+        "indexedDB": true,
+        "appConfig": true
     },
     "rules": {
         "arrow-parens": "off",

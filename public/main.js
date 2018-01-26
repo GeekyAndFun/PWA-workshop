@@ -1,10 +1,7 @@
 import { setupUI, displayAuthor } from './scripts/ui.js';
 import { setupServiceWorker } from './scripts/app.js';
 
-const indexedDbStoreConfigs = [
-    { name: 'AuthorStore' },
-    { name: 'UnsentMsg', config: { keyPath: 'timestamp' } },
-];
+const indexedDbStoreConfigs = Object.keys(appConfig.dbConfigs).map(key => appConfig.dbConfigs[key]);
 
 setupUI();
 setupServiceWorker();
