@@ -2,7 +2,7 @@ import { setUpMessagingPushNotifications } from './messaging-service.js';
 
 export const setupServiceWorker = () => {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('../../geeky-service-worker.js').then(
+        navigator.serviceWorker.register('https://geekyandfun.github.io/PWA-workshop/geeky-service-worker.js').then(
             registration => {
                 setUpMessagingPushNotifications(registration);
             },
