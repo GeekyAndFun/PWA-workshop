@@ -28,14 +28,21 @@ export const setupServiceWorkers = () => {
                     .requestPermission()
                     .then(() => {
                         // pushCheckbox.checked = true;
+
                         messaging.getToken().then(token => {
+                            firebase
+                                .database()
+                                .ref(`tokens/${token}`)
+                                .set(true);
+
                             console.log(token);
                         });
                     })
                     .catch(() => {
                         console.error('No permission...');
                     });
-                messaging.onMessage((e) => console.log(e));
+
+                messaging.onMessage(e => console.log(e));
             },
             err => {
                 console.error(`Service Worker failed ${err}`);
