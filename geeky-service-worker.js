@@ -40,7 +40,23 @@ firebase.messaging().setBackgroundMessageHandler(onPushNotification);
 function onPushNotification(payload) {
     const title = 'Geeky & Fun';
     return self.registration.showNotification(title, {
-        icon: './resources/icons/icon-512x512.png',
-        body: `${payload.author}: ${payload.text} | ${Utils.getDateString()}`
+        icon: 'public/images/icons/icon-512x512.png',
+        body: `${payload.data.text}
+${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`
     });
+}
+
+/** Utils */
+function getDateString(dateObject) {
+    let hours = dateObject.getHours();
+    if (hours < 10) {
+        hours = `0${hours}`;
+    }
+
+    let minutes = dateObject.getMinutes();
+    if (minutes < 10) {
+        minutes = `0${minutes}`;
+    }
+
+    return `${hours}:${minutes}`;
 }

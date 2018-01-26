@@ -22,19 +22,20 @@ export const setupServiceWorkers = () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../../geeky-service-worker.js').then(
             registration => {
-                // const messaging = firebase.messaging();
-                // messaging.useServiceWorker(registration);
-                // messaging
-                //     .requestPermission()
-                //     .then(() => {
-                //         // pushCheckbox.checked = true;
-                //         messaging.getToken().then(token => {
-                //             console.log(token);
-                //         });
-                //     })
-                //     .catch(() => {
-                //         console.error('No permission...');
-                //     });
+                const messaging = firebase.messaging();
+                messaging.useServiceWorker(registration);
+                messaging
+                    .requestPermission()
+                    .then(() => {
+                        // pushCheckbox.checked = true;
+                        messaging.getToken().then(token => {
+                            console.log(token);
+                        });
+                    })
+                    .catch(() => {
+                        console.error('No permission...');
+                    });
+                messaging.onMessage((e) => console.log(e));
             },
             err => {
                 console.error(`Service Worker failed ${err}`);
