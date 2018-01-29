@@ -1,6 +1,7 @@
 import { getAuthor, setAuthor } from './app.js';
 import { getMessages, onNewMessage, sendMessage } from './messaging-service.js';
 
+const mainContainer = document.getElementsByClassName('container')[0];
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
 const nameInput = document.getElementById('nameInput');
@@ -13,6 +14,8 @@ export function setupUI() {
             messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
         );
         messagesContainer.appendChild(messagesFragment);
+
+        mainContainer.scrollTo(0, mainContainer.scrollHeight);
 
         onNewMessage(resp.latestTimestamp, message => {
             messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
@@ -30,16 +33,14 @@ export function setupUI() {
         );
     });
 
-    // TODO: write a debonucer and re-use
-    let nameChangeTimeout;
-    nameInput.addEventListener('input', function onNameChange() {
-        if (nameChangeTimeout !== undefined) {
-            window.clearTimeout(nameChangeTimeout);
-        }
-        nameChangeTimeout = setTimeout(() => {
+    mainContainer.addEventListener('scroll', lazyDebounce(onScrollTop, 250));
+
+    nameInput.addEventListener(
+        'input',
+        lazyDebounce(function() {
             setAuthor(this.value);
-        }, 500);
-    });
+        }, 500)
+    );
 }
 export function displayAuthor() {
     // TODO: get the user from the login service. indexdb should only be used to log in the user if there was an active session
@@ -48,6 +49,36 @@ export function displayAuthor() {
         nameInput.value = author;
     });
 }
+
+function onScrollTop(e) {
+    const { scrollTop } = e.srcElement;
+
+    if (scrollTop === 0) {
+        toggleLoadingNotification(true);
+        getMessages().then(resp => {
+            if (resp.messages.length === 0) {
+                toggleLoadingNotification(false);
+            }
+            const tempMessagesFragment = new DocumentFragment();
+
+            resp.messages.forEach(msg =>
+                tempMessagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
+            );
+            const previousHeight = mainContainer.scrollHeight;
+
+            messagesContainer.insertBefore(tempMessagesFragment, messagesContainer.firstChild);
+            mainContainer.scrollTop = mainContainer.scrollHeight - previousHeight;
+        });
+    }
+}
+
+const toggleLoadingNotification = (function toggleNotificationIife() {
+    const spinner = document.getElementById('spinner');
+
+    return function(visible = true) {
+        spinner.style.display = visible ? 'block' : 'none';
+    };
+}());
 
 /** Utility Functions */
 function createMessageDOM(author, text, dateObject = new Date()) {
@@ -72,4 +103,16 @@ function getDateString(dateObject) {
     }
 
     return `${hours}:${minutes}`;
+}
+
+function lazyDebounce(callback, delay) {
+    let timeout = null;
+    return function(e) {
+        if (timeout) {
+            window.clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            callback.call(this, e);
+        }, delay);
+    };
 }

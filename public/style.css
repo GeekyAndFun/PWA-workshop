@@ -253,6 +253,42 @@ body.menu--visible footer {
     font-size: 2em;
 }
 
+/** Spinner - from http://tobiasahlin.com/ */
+#spinner {
+    margin: 1em auto 0 auto;
+    width: 70px;
+    text-align: center;
+}
+
+#spinner > div {
+    width: 18px;
+    height: 18px;
+    background-color: #4141ac;
+
+    border-radius: 100%;
+    display: inline-block;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+#spinner .bounce1 {
+    animation-delay: -0.32s;
+}
+
+#spinner .bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
+}
+
 /** RESPONSIVE-ness */
 @media only screen and (max-width: 400px) {
     .header__text {

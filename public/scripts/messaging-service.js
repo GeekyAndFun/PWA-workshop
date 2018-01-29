@@ -39,32 +39,33 @@ export function setUpMessagingPushNotifications(registration) {
 export const getMessages = (function getMessagesIife() {
     let latestTimestamp = null;
 
-    return function(size = 20, startAgain = false) {
+    return function(size = 5, startAgain = false) {
         if (startAgain === true) {
             latestTimestamp = null;
         }
 
         let query = databaseRef.orderByChild('timestamp').startAt(0);
         if (typeof latestTimestamp === 'number') {
-            query = query.endAt(latestTimestamp);
+            query = query.endAt(latestTimestamp - 1);
         }
 
         return new Promise(resolve => {
             query.limitToLast(size).once('value', resp => {
-                let index = 0;
                 const messages = [];
 
                 resp.forEach(snapshot => {
                     const value = snapshot.val();
 
                     messages.push(value);
-
-                    if (index === 0) {
-                        latestTimestamp = value.timestamp - 1;
-                        index += 1;
-                    }
                 });
-                resolve({ messages, latestTimestamp: latestTimestamp + 2 });
+
+                if (messages.length > 0) {
+                    latestTimestamp = messages[0].timestamp;
+
+                    resolve({ messages, latestTimestamp: messages[messages.length - 1].timestamp });
+                } else {
+                    resolve({ messages, latestTimestamp });
+                }
             });
         });
     };
@@ -73,7 +74,7 @@ export const getMessages = (function getMessagesIife() {
 export function onNewMessage(latestTimestamp, callback) {
     return databaseRef
         .orderByChild('timestamp')
-        .startAt(latestTimestamp || 0)
+        .startAt(latestTimestamp + 1 || 0)
         .on('child_added', data => {
             const value = data.val();
 
@@ -96,7 +97,7 @@ export function sendMessage(author, text) {
     // It won't work in the background, but at least it will auto send when the app opened.
     if (!isOnline && 'serviceWorker' in navigator) {
         IndexedDb.insertRecord(appConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: true }));
-        return navigator.serviceWorker.ready.then((reg) => {
+        return navigator.serviceWorker.ready.then(reg => {
             reg.sync.register('sendMessage');
         });
     }
