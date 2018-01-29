@@ -1,14 +1,3 @@
-/** Caching */
-importScripts('./caching-service-worker.js');
-
-/** Firebase Init */
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
-
-importScripts('./indexeddb.js');
-importScripts('./appConfig.js');
-
 const config = {
     apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
     authDomain: 'geek-alert.firebaseapp.com',
@@ -21,7 +10,19 @@ const config = {
 firebase.initializeApp(config);
 
 const databaseRef = firebase.database().ref('/messages');
+self.addEventListener('install', () => {
+    /** Caching */
+    importScripts('./caching-service-worker.js');
 
+    /** Firebase Init */
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
+
+    importScripts('./indexeddb.js');
+    importScripts('./appConfig.js');
+    console.log('mama ta nu se reincarca 2');
+});
 async function sendMessage() {
     await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
     const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);

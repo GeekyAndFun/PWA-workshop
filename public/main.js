@@ -3,9 +3,9 @@ import { setupServiceWorker } from './scripts/app.js';
 
 const indexedDbStoreConfigs = Object.keys(AppConfig.dbConfigs).map(key => AppConfig.dbConfigs[key]);
 IndexedDb.setupDbStores(AppConfig.dbName, AppConfig.dbVersion, indexedDbStoreConfigs).then(() => {
+    paintCachedMessages();
     displayAuthor();
     setupUI();
-    paintCachedMessages();
 });
 
 setupServiceWorker();

@@ -1,20 +1,20 @@
 import { getAuthor, setAuthor } from './app.js';
-import { getExistingMessages, onNewMessage, sendMessage, retrieveCachedMessages } from './messaging-service.js';
+import { getMessages, onNewMessage, sendMessage, retrieveCachedMessages } from './messaging-service.js';
 
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
 const nameInput = document.getElementById('nameInput');
 
 export function setupUI() {
-    getExistingMessages().then(resp => {
+    getMessages().then(resp => {
         const messagesFragment = new DocumentFragment();
 
-        resp.forEach(msg =>
+        resp.messages.forEach(msg =>
             messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
         );
         messagesContainer.appendChild(messagesFragment);
 
-        onNewMessage(message => {
+        onNewMessage(resp.latestTimestamp, message => {
             messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
         });
     });

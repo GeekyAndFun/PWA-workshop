@@ -1,8 +1,6 @@
 const databaseRef = window.firebase.database().ref('/messages');
 const tokensRef = window.firebase.database().ref('/tokens');
 
-let latestMessageId = null;
-
 let isOnline = true;
 
 const updateOnlineStatus = () => {
@@ -38,31 +36,48 @@ export function setUpMessagingPushNotifications(registration) {
     messaging.onMessage(e => console.log(e));
 }
 
-export function getExistingMessages() {
-    return new Promise(resolve => {
-        const messages = [];
+export const getMessages = (function getMessagesIife() {
+    let latestTimestamp = null;
 
-        databaseRef.once('value', snapshot => {
-            snapshot.forEach(childSnapshot => {
-                const value = childSnapshot.val();
+    return function(size = 20, startAgain = false) {
+        if (startAgain === true) {
+            latestTimestamp = null;
+        }
 
-                latestMessageId = childSnapshot.key;
-                messages.push(value);
+        let query = databaseRef.orderByChild('timestamp').startAt(0);
+        if (typeof latestTimestamp === 'number') {
+            query = query.endAt(latestTimestamp);
+        }
+
+        return new Promise(resolve => {
+            query.limitToLast(size).once('value', resp => {
+                let index = 0;
+                const messages = [];
+
+                resp.forEach(snapshot => {
+                    const value = snapshot.val();
+
+                    messages.push(value);
+
+                    if (index === 0) {
+                        latestTimestamp = value.timestamp - 1;
+                        index += 1;
+                    }
+                });
+                resolve({ messages, latestTimestamp: latestTimestamp + 2 });
             });
-
-            resolve(messages);
         });
-    });
-}
+    };
+}());
 
-export function onNewMessage(callback) {
+export function onNewMessage(latestTimestamp, callback) {
     return databaseRef
-        .orderByKey()
-        .startAt(latestMessageId || '')
+        .orderByChild('timestamp')
+        .startAt(latestTimestamp || 0)
         .on('child_added', data => {
             const value = data.val();
 
-            if (data.key !== latestMessageId) {
+            if (data.key !== latestTimestamp) {
                 callback(value);
             }
         });
