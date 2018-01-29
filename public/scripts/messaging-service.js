@@ -115,3 +115,4 @@ export function sendMessage(author, text) {
 export function retrieveCachedMessages() {
     return IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
 }
+

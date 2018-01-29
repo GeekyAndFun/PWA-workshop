@@ -8,19 +8,19 @@ const nameInput = document.getElementById('nameInput');
 
 export function setupUI() {
     getMessages().then(resp => {
-        const messagesFragment = new DocumentFragment();
+        // const messagesFragment = new DocumentFragment();
 
-        resp.messages.forEach(msg =>
-            messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
-        );
+        // resp.messages.forEach(msg =>
+        //     messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
+        // );
 
-        messagesContainer.appendChild(messagesFragment);
-        mainContainer.scrollTo(0, mainContainer.scrollHeight);
-        toggleLoadingNotification(false);
+        // messagesContainer.appendChild(messagesFragment);
+        // mainContainer.scrollTo(0, mainContainer.scrollHeight);
+        // toggleLoadingNotification(false);
 
-        onNewMessage(resp.latestTimestamp, message => {
-            messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
-        });
+        // onNewMessage(resp.latestTimestamp, message => {
+        //     messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
+        // });
     });
 
     document.getElementById('sendMessage').addEventListener('click', onSendMessage);
@@ -86,13 +86,11 @@ const toggleLoadingNotification = (function toggleNotificationIife() {
     return function(visible = true) {
         spinner.style.display = visible ? 'block' : 'none';
     };
-})();
+}());
 
-export async function paintCachedMessages() {
-    const cachedMessages = await retrieveCachedMessages();
-
-    if (cachedMessages.length) {
-        const messageDom = cachedMessages.reduce((msgFragment, msg) => {
+export async function paintCachedMessages(msgList) {
+    if (msgList.length) {
+        const messageDom = msgList.reduce((msgFragment, msg) => {
             msgFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)));
             return msgFragment;
         }, new DocumentFragment());
