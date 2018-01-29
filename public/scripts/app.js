@@ -15,10 +15,10 @@ export const setupServiceWorker = () => {
 
 /** DATABASE */
 export function setAuthor(authorName) {
-    return IndexedDb.updateRecord(appConfig.dbConfigs.userConfig.name, authorName, 'currentAuthor');
+    return IndexedDb.updateRecord(AppConfig.dbConfigs.userConfig.name, authorName, 'currentAuthor');
 }
 
 export function getAuthor() {
     // TODO: write login service and get author from there. Index db should only hold the logged user in bettween sessions
-    return IndexedDb.readRecords(appConfig.dbConfigs.userConfig.name, 'currentAuthor').then(author => author || 'John Doe');
+    return IndexedDb.readRecords(AppConfig.dbConfigs.userConfig.name, 'currentAuthor').then(author => author || 'John Doe');
 }

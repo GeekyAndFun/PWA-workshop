@@ -14,7 +14,7 @@
         "firebase": true,
         "IndexedDb": true,
         "indexedDB": true,
-        "appConfig": true
+        "AppConfig": true
     },
     "rules": {
         "arrow-parens": "off",

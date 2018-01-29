@@ -1,5 +1,5 @@
 import { getAuthor, setAuthor } from './app.js';
-import { getMessages, onNewMessage, sendMessage } from './messaging-service.js';
+import { getMessages, onNewMessage, sendMessage, retrieveCachedMessages } from './messaging-service.js';
 
 const mainContainer = document.getElementsByClassName('container')[0];
 const messagesContainer = document.getElementById('messagesWrapper');
@@ -79,6 +79,19 @@ const toggleLoadingNotification = (function toggleNotificationIife() {
         spinner.style.display = visible ? 'block' : 'none';
     };
 }());
+
+export async function paintCachedMessages() {
+    const cachedMessages = await retrieveCachedMessages();
+
+    if (cachedMessages.length) {
+        const messageDom = cachedMessages.reduce((msgFragment, msg) => {
+            msgFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)));
+            return msgFragment;
+        }, new DocumentFragment());
+
+        messagesContainer.appendChild(messageDom);
+    }
+}
 
 /** Utility Functions */
 function createMessageDOM(author, text, dateObject = new Date()) {
