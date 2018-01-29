@@ -29,22 +29,39 @@ async function sendMessage() {
     const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
     const unsentMessages = cachedMessages.filter(record => record.unsent);
 
-    return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
-        IndexedDb.updateRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: false }));
-    })));
+    return Promise.all(
+        unsentMessages.map(msg =>
+            databaseRef.push(msg).then(() => {
+                IndexedDb.updateRecord(
+                    AppConfig.dbConfigs.messagesConfig.name,
+                    Object.assign({}, msg, { unsent: false })
+                );
+            })
+        )
+    );
 }
 
 self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
-        event.waitUntil(sendMessage());
+        event.waitUntil(
+            sendMessage().then(() => {
+                onPushNotification({
+                    data: {
+                        text: 'Messages have been sent in the background!',
+                        author: 'App',
+                        timestamp: Date.now()
+                    }
+                });
+            })
+        );
     }
 });
 
 /** Push Notifications */
 
-
 function onPushNotification(payload) {
     const title = 'Geeky & Fun';
+
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
         body: `${payload.data.text}
