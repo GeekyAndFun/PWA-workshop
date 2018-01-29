@@ -12,6 +12,16 @@ window.addEventListener('load', () => {
     window.addEventListener('online', updateOnlineStatus);
 });
 
+async function addMessageToCache(message, unsent) {
+    const storeKeys = await IndexedDb.getStoreKeys(AppConfig.dbConfigs.messagesConfig.name);
+    if (storeKeys.indexOf(message.timestamp) === -1) {
+        if (storeKeys.length >= 20) {
+            IndexedDb.shiftRecord(AppConfig.dbConfigs.messagesConfig.name);
+        }
+        IndexedDb.pushRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, message, { unsent }));
+    }
+}
+
 export function setUpMessagingPushNotifications(registration) {
     const messaging = firebase.messaging();
     messaging.useServiceWorker(registration);
@@ -76,7 +86,7 @@ export function onNewMessage(latestTimestamp, callback) {
         .startAt(latestTimestamp || 0)
         .on('child_added', data => {
             const value = data.val();
-
+            addMessageToCache(value);
             if (data.key !== latestTimestamp) {
                 callback(value);
             }
@@ -95,13 +105,11 @@ export function sendMessage(author, text) {
     // TODO - gracefully degrade this to a script which auto sends when network is back.
     // It won't work in the background, but at least it will auto send when the app opened.
     if (!isOnline && 'serviceWorker' in navigator) {
-        IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: true }));
+        addMessageToCache(msg, true);
         return navigator.serviceWorker.ready.then((reg) => {
             reg.sync.register('sendMessage');
         });
     }
-
-    IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, msg);
     return databaseRef.push(msg);
 }
 

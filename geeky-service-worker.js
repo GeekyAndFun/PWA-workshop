@@ -7,9 +7,7 @@ const config = {
     messagingSenderId: '1044469279944'
 };
 
-firebase.initializeApp(config);
-
-const databaseRef = firebase.database().ref('/messages');
+let databaseRef;
 self.addEventListener('install', () => {
     /** Caching */
     importScripts('./caching-service-worker.js');
@@ -21,7 +19,10 @@ self.addEventListener('install', () => {
 
     importScripts('./indexeddb.js');
     importScripts('./appConfig.js');
-    console.log('mama ta nu se reincarca 2');
+    firebase.initializeApp(config);
+    databaseRef = firebase.database().ref('/messages');
+    firebase.messaging().setBackgroundMessageHandler(onPushNotification);
+    console.log('mama ta nu se reincarca 3');
 });
 async function sendMessage() {
     await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
@@ -29,7 +30,7 @@ async function sendMessage() {
     const unsentMessages = cachedMessages.filter(record => record.unsent);
 
     return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
-        IndexedDb.updateRecord(AppConfig.dbConfigs.messagesConfig, Object.assign({}, msg, { unsent: false }), msg.timestamp);
+        IndexedDb.updateRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: false }));
     })));
 }
 
@@ -40,7 +41,7 @@ self.addEventListener('sync', event => {
 });
 
 /** Push Notifications */
-firebase.messaging().setBackgroundMessageHandler(onPushNotification);
+
 
 function onPushNotification(payload) {
     const title = 'Geeky & Fun';

@@ -51,7 +51,7 @@ const IndexedDb = (function() {
             db = null;
         }
 
-        insertRecord(storeName, data, key) {
+        pushRecord(storeName, data, key) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([storeName], 'readwrite');
                 const store = transaction.objectStore(storeName);
@@ -66,6 +66,10 @@ const IndexedDb = (function() {
                     resolve();
                 };
             });
+        }
+
+        shiftRecord(storeName) {
+            return this.getStoreKeys(storeName).then((resp) => this.deleteRecord(storeName, resp[0]));
         }
 
         updateRecord(storeName, data, key) {
@@ -115,6 +119,23 @@ const IndexedDb = (function() {
 
                 request.onsuccess = function() {
                     resolve();
+                };
+            });
+        }
+
+        getStoreKeys(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+
+                const request = store.getAllKeys();
+
+                request.onerror = function() {
+                    reject();
+                };
+
+                request.onsuccess = function(e) {
+                    resolve(e.target.result);
                 };
             });
         }
