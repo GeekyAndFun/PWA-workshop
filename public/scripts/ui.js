@@ -13,9 +13,10 @@ export function setupUI() {
         resp.messages.forEach(msg =>
             messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
         );
-        messagesContainer.appendChild(messagesFragment);
 
+        messagesContainer.appendChild(messagesFragment);
         mainContainer.scrollTo(0, mainContainer.scrollHeight);
+        toggleLoadingNotification(false);
 
         onNewMessage(resp.latestTimestamp, message => {
             messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
