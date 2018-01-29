@@ -97,9 +97,7 @@ export function sendMessage(author, text) {
     // It won't work in the background, but at least it will auto send when the app opened.
     if (!isOnline && 'serviceWorker' in navigator) {
         IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: true }));
-        return navigator.serviceWorker.ready.then((reg) => {
-            reg.sync.register('sendMessage');
-        });
+        return navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage')).catch(e => console.error(e));
     }
 
     IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, msg);

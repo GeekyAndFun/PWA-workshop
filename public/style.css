@@ -102,10 +102,32 @@ body.menu--visible #headerIconContainer .flipper {
     margin: 0 auto;
     margin-bottom: 2em;
 }
+
 .msg__text {
     margin-bottom: 0;
     font-weight: bold;
 }
+.msg__not-send {
+    display: none;
+}
+
+.msg.msg--not-send {
+    border: 2px solid #bc2424ad;
+    box-shadow: 0px 0px 5px #bc2424ad;
+}
+
+.msg.msg--not-send .msg__text {
+    margin-bottom: 0;
+}
+
+.msg.msg--not-send .msg__not-send {
+    font-weight: bold;
+    text-align: right;
+    color: red;
+    margin: 0;
+    display: block;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -143,24 +165,48 @@ footer button {
     outline: none;
 }
 
+footer button .text {
+    display: inline-block;
+}
+footer button .spinner {
+    display: none;
+}
+
+footer button.loading .text {
+    display: none;
+}
+
+footer button.loading .spinner {
+    display: inline-block;
+    margin: 0;
+}
+
 footer button:hover {
     color: #fff;
     background-color: #4141ac;
 }
 
+footer button.loading:hover .spinner > div {
+    background-color: #fff;
+}
+
 /** MENU--begin */
 #menu {
-    position: absolute;
+    position: fixed;
     display: none;
-    top: 0;
+    top: 80px;
     right: 0;
     bottom: 0;
     left: 0;
-    min-height: 700px;
     background-color: #4141ac;
     color: #fff;
     text-align: center;
     padding-top: 2em;
+    overflow: auto;
+}
+
+#menu .menu-content {
+    min-height: 700px;
 }
 
 body.menu--visible #menu {
@@ -254,13 +300,13 @@ body.menu--visible footer {
 }
 
 /** Spinner - from http://tobiasahlin.com/ */
-#spinner {
+.spinner {
     margin: 1em auto 0 auto;
     width: 70px;
     text-align: center;
 }
 
-#spinner > div {
+.spinner > div {
     width: 18px;
     height: 18px;
     background-color: #4141ac;
@@ -270,11 +316,11 @@ body.menu--visible footer {
     animation: sk-bouncedelay 1.4s infinite ease-in-out both;
 }
 
-#spinner .bounce1 {
+.spinner .bounce1 {
     animation-delay: -0.32s;
 }
 
-#spinner .bounce2 {
+.spinner .bounce2 {
     animation-delay: -0.16s;
 }
 

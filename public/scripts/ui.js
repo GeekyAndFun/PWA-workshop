@@ -23,16 +23,7 @@ export function setupUI() {
         });
     });
 
-    document.getElementById('sendMessage').addEventListener('click', () => {
-        // TODO: get the user from the login service. indexdb should only be used to log in the user if there was an active session
-        // before closing the app last time
-        sendMessage(nameInput.value, textarea.value).then(
-            () => {
-                textarea.value = null;
-            },
-            err => console.error(err)
-        );
-    });
+    document.getElementById('sendMessage').addEventListener('click', onSendMessage);
 
     mainContainer.addEventListener('scroll', lazyDebounce(onScrollTop, 250));
 
@@ -49,6 +40,22 @@ export function displayAuthor() {
     getAuthor().then(author => {
         nameInput.value = author;
     });
+}
+
+function onSendMessage() {
+    // TODO: get the user from the login service. indexdb should only be used to log in the user if there was an active session
+    // before closing the app last time
+    this.classList.toggle('loading');
+    this.disabled = true;
+
+    sendMessage(nameInput.value, textarea.value).then(
+        () => {
+            textarea.value = null;
+            this.classList.toggle('loading');
+            this.disabled = false;
+        },
+        err => console.error(err)
+    );
 }
 
 function onScrollTop(e) {
@@ -74,12 +81,12 @@ function onScrollTop(e) {
 }
 
 const toggleLoadingNotification = (function toggleNotificationIife() {
-    const spinner = document.getElementById('spinner');
+    const spinner = document.getElementById('messages-loading');
 
     return function(visible = true) {
         spinner.style.display = visible ? 'block' : 'none';
     };
-}());
+})();
 
 export async function paintCachedMessages() {
     const cachedMessages = await retrieveCachedMessages();
@@ -101,7 +108,7 @@ function createMessageDOM(author, text, dateObject = new Date()) {
 
     const dateString = getDateString(dateObject);
 
-    element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p>`;
+    element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p><p class="msg__not-send">Not send</p>`;
     return element;
 }
 
