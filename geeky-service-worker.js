@@ -23,12 +23,12 @@ firebase.initializeApp(config);
 const databaseRef = firebase.database().ref('/messages');
 
 async function sendMessage() {
-    await IndexedDb.setupDbConnection('GeekyDatabase', 1);
-    const cachedMessages = await IndexedDb.readRecords(appConfig.dbConfigs.messagesConfig.name);
+    await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
+    const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
     const unsentMessages = cachedMessages.filter(record => record.unsent);
 
     return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
-        IndexedDb.updateRecord(appConfig.dbConfigs.messagesConfig, Object.assign({}, msg, { unsent: false }), msg.timestamp);
+        IndexedDb.updateRecord(AppConfig.dbConfigs.messagesConfig, Object.assign({}, msg, { unsent: false }), msg.timestamp);
     })));
 }
 

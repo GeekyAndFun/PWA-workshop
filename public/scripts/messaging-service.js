@@ -80,12 +80,16 @@ export function sendMessage(author, text) {
     // TODO - gracefully degrade this to a script which auto sends when network is back.
     // It won't work in the background, but at least it will auto send when the app opened.
     if (!isOnline && 'serviceWorker' in navigator) {
-        IndexedDb.insertRecord(appConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: true }));
+        IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, msg, { unsent: true }));
         return navigator.serviceWorker.ready.then((reg) => {
             reg.sync.register('sendMessage');
         });
     }
 
-    IndexedDb.insertRecord(appConfig.dbConfigs.messagesConfig.name, msg);
+    IndexedDb.insertRecord(AppConfig.dbConfigs.messagesConfig.name, msg);
     return databaseRef.push(msg);
+}
+
+export function retrieveCachedMessages() {
+    return IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
 }
