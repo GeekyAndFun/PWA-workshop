@@ -25,49 +25,63 @@
         <span class="header__text">Alert</span>
     </header>
     <div class="container">
+        <div id="messages-loading" class="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
         <div id="messagesWrapper"></div>
         <footer>
             <textarea placeholder="What are you thinking..."></textarea>
-            <button id="sendMessage" type="button">⚡ Alert ⚡</button>
+            <button id="sendMessage" type="button">
+                <span class="text">⚡ Alert ⚡</span>
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </button>
         </footer>
         <div id="menu">
-            <h1>
-                <span id="geekPoints" class="secondary-font">1096</span>
-                <span>geek points</span>
-            </h1>
-            <ol class="menu__ranks">
-                <li class="rank">
-                    <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
-                    <p class="rank__name secondary-font">
-                        <span class="rank__title">Geek God</span>
-                        <span class="rank__threshold">2000 geek points</span>
-                    </p>
-                </li>
-                <li class="rank rank--is-current">
-                    <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
-                    <p class="rank__name secondary-font">
-                        <span class="rank__title">Geek Master</span>
-                        <span class="rank__threshold">1000 geek points</span>
-                    </p>
-                </li>
-                <li class="rank">
-                    <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
-                    <p class="rank__name secondary-font">
-                        <span class="rank__title">Geek</span>
-                        <span class="rank__threshold">500 geek points</span>
-                    </p>
-                </li>
-            </ol>
-            <hr />
-            <div class="form-group">
-                <input type="checkbox" id="pushChecckbox" />
-                <label for="pushCheckbox">Push Notifications</label>
+            <div class="menu-content">
+                <h1>
+                    <span id="geekPoints" class="secondary-font">1096</span>
+                    <span>geek points</span>
+                </h1>
+                <ol class="menu__ranks">
+                    <li class="rank">
+                        <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
+                        <p class="rank__name secondary-font">
+                            <span class="rank__title">Geek God</span>
+                            <span class="rank__threshold">2000 geek points</span>
+                        </p>
+                    </li>
+                    <li class="rank rank--is-current">
+                        <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
+                        <p class="rank__name secondary-font">
+                            <span class="rank__title">Geek Master</span>
+                            <span class="rank__threshold">1000 geek points</span>
+                        </p>
+                    </li>
+                    <li class="rank">
+                        <img class="rank__icon" rel="prefetch" src="public/images/icon.png" />
+                        <p class="rank__name secondary-font">
+                            <span class="rank__title">Geek</span>
+                            <span class="rank__threshold">500 geek points</span>
+                        </p>
+                    </li>
+                </ol>
+                <hr />
+                <div class="form-group">
+                    <input type="checkbox" id="pushChecckbox" />
+                    <label for="pushCheckbox">Push Notifications</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nameInput" placeholder="Name..." />
+                </div>
+                <p class="attribution"> 🤘 Geek Alert is a PWA app built for the
+                    <a href="">Geeky & Fun</a> workshop 🚀</p>
             </div>
-            <div class="form-group">
-                <input type="text" id="nameInput" placeholder="Name..." />
-            </div>
-            <p class="attribution"> 🤘 Geek Alert is a PWA app built for the
-                <a href="">Geeky & Fun</a> workshop 🚀</p>
         </div>
     </div>
     <div id="overlay">
