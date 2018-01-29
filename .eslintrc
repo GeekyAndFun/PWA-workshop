@@ -59,6 +59,7 @@
         "no-restricted-globals": "off",
         "func-names": 0,
         "import/extensions": ["error", "always"],
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "no-console": "off"
     }
 }

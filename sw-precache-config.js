@@ -17,3 +17,4 @@ swPrecache.write('./caching-service-worker.js', options, err => {
         console.error(err);
     }
 });
+
