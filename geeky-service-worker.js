@@ -7,6 +7,7 @@ importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
 importScripts('./indexeddb.js');
+importScripts('./appConfig.js');
 
 const config = {
     apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
@@ -23,10 +24,11 @@ const databaseRef = firebase.database().ref('/messages');
 
 async function sendMessage() {
     await IndexedDb.setupDbConnection('GeekyDatabase', 1);
-    const unsentMessages = await IndexedDb.readRecords('UnsentMsg');
+    const cachedMessages = await IndexedDb.readRecords(appConfig.dbConfigs.messagesConfig.name);
+    const unsentMessages = cachedMessages.filter(record => record.unsent);
 
     return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
-        IndexedDb.deleteRecord('UnsentMsg', msg.timestamp);
+        IndexedDb.updateRecord(appConfig.dbConfigs.messagesConfig, Object.assign({}, msg, { unsent: false }), msg.timestamp);
     })));
 }
 
