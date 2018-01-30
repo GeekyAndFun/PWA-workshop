@@ -55,6 +55,8 @@ function onSendMessage() {
             this.disabled = false;
         },
         () => {
+            textarea.value = null;
+            this.classList.toggle('loading');
             console.error('Display the message on the UI with the unsent flag!');
         }
     );

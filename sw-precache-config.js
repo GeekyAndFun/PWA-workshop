@@ -4,7 +4,7 @@ const options = {
     staticFileGlobs: [
         '/',
         'index.html',
-        'indexeddb.js',
+        'common.js',
         'appConfig.js',
         'public/images/icon.png',
         'public/images/icon--flipped.png',
