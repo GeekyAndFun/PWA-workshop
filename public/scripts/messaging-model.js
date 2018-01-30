@@ -1,4 +1,4 @@
-import { getMessages, retrieveCachedMessages } from './messaging-service.js';
+import { getMessages, retrieveCachedMessages, onNewMessage } from './messaging-service.js';
 
 let messages = [];
 function mergeArrays(arr1, arr2) {
@@ -7,39 +7,52 @@ function mergeArrays(arr1, arr2) {
     const result = [];
     while (arr1[i] || arr2[j]) {
         if (!arr1[i]) {
-            result.concat(arr2.slice(j, arr2.length));
-            return result;
+            return result.concat(arr2.slice(j, arr2.length));
         }
 
         if (!arr2[j]) {
-            result.concat(arr1.slice(i, arr1.length));
-            return result;
+            return result.concat(arr1.slice(i, arr1.length));
         }
 
-        if (arr1[i].timestamp < arr1[j].timestamp) {
+        if (arr1[i].timestamp < arr2[j].timestamp) {
             result.push(arr1[i]);
             i += 1;
-        } else if (arr1[i].timestamp > arr1[j].timestamp) {
-            result.push(arr1[j]);
+        } else if (arr1[i].timestamp > arr2[j].timestamp) {
+            result.push(arr2[j]);
             j += 1;
         } else {
+            result.push(arr1[i]);
+            if (arr1[i].text !== arr2[j].text) {
+                result.push(arr2[j]);
+            }
             i += 1;
             j += 1;
-            result.push(arr1[j]);
         }
     }
     return result;
 }
-export function getServerMsgs() {
+function addNewMessages(msgs) {
+    let messageArray;
+    if (!Array.isArray(msgs)) {
+        messageArray = [msgs];
+    } else {
+        messageArray = msgs;
+    }
+    messages = mergeArrays(messages, messageArray);
+    return JSON.parse(JSON.stringify(messages));
+}
+export function getServerMsgs(onInit) {
     return getMessages().then(resp => {
-        messages = mergeArrays(messages, resp);
-        return messages;
+        if (onInit) {
+            onNewMessage(resp.latestTimestamp, addNewMessages);
+        }
+        messages = mergeArrays(messages, resp.messages);
+        return JSON.parse(JSON.stringify(messages));
     });
 }
 export function getCachedMsgs() {
     return retrieveCachedMessages().then(resp => {
         messages = mergeArrays(messages, resp);
-        return messages;
+        return JSON.parse(JSON.stringify(messages));
     });
 }
-export function ceva() { return null; }

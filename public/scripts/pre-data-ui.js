@@ -2,12 +2,9 @@ const DEFAULT_FOOTER_HEIGHT = '50px';
 const MAX_FOOTER_HEIGHT = 150;
 const ONBOARDING_DELAY = 3000;
 
-let footer = document.getElementsByTagName('footer')[0];
+const footer = document.getElementsByTagName('footer')[0];
 let overlay = document.getElementById('overlay');
-let textarea = document.getElementsByTagName('textarea')[0];
-
-console.log('ceva doi de SSS !!!');
-console.log('ceva doi de SSS !!!');
+const textarea = document.getElementsByTagName('textarea')[0];
 
 document.getElementById('headerIconContainer').addEventListener('click', () => {
     document.body.classList.toggle('menu--visible');

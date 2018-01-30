@@ -1,14 +1,12 @@
-import { setupUI, displayAuthor, paintCachedMessages } from './scripts/ui.js';
+import { displayAuthor } from './scripts/ui.js';
 import { setupServiceWorker } from './scripts/app.js';
-import { getCachedMsgs } from './scripts/messaging-model.js';
+import { dispatchGetCachedMsgs, dispatchGetServerMsgs } from './scripts/messaging-controller.js';
+
 
 const indexedDbStoreConfigs = Object.keys(AppConfig.dbConfigs).map(key => AppConfig.dbConfigs[key]);
 IndexedDb.setupDbStores(AppConfig.dbName, AppConfig.dbVersion, indexedDbStoreConfigs).then(() => {
-    getCachedMsgs().then((resp) => {
-        paintCachedMessages(resp);
-    });
+    dispatchGetCachedMsgs();
     displayAuthor();
-    setupUI();
 });
-
+dispatchGetServerMsgs(true);
 setupServiceWorker();
