@@ -42,14 +42,12 @@ self.addEventListener('sync', event => {
 });
 
 /** Push Notifications */
-
 function onPushNotification(payload) {
     const title = 'Geeky & Fun';
 
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
-        body: `${payload.data.text}
-${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`
+        body: `${payload.data.text}${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`
     });
 }
 

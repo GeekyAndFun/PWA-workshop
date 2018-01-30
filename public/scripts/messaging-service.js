@@ -1,5 +1,5 @@
+// Server and DB communication
 const databaseRef = window.firebase.database().ref('/messages');
-const tokensRef = window.firebase.database().ref('/tokens');
 
 let hasServiceWorker = false;
 
@@ -40,11 +40,7 @@ export function setUpMessagingPushNotifications(registration) {
 export const getMessages = (function getMessagesIife() {
     let latestTimestamp = null;
 
-    return function(size = 5, startAgain = false) {
-        if (startAgain === true) {
-            latestTimestamp = null;
-        }
-
+    return function(size = 5) {
         let query = databaseRef.orderByChild('timestamp').startAt(0);
         if (typeof latestTimestamp === 'number') {
             query = query.endAt(latestTimestamp - 1);
@@ -72,16 +68,14 @@ export const getMessages = (function getMessagesIife() {
     };
 }());
 
-export function onNewMessage(latestTimestamp, callback) {
+export function onNewMessage(latestTimestamp, updateModelCallback) {
     return databaseRef
         .orderByChild('timestamp')
         .startAt(latestTimestamp + 1 || 0)
         .on('child_added', data => {
             const value = data.val();
             addMessageToCache(value);
-            if (data.key !== latestTimestamp) {
-                callback(value);
-            }
+            updateModelCallback([value]);
         });
 }
 

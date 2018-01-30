@@ -1,27 +1,17 @@
 import { getAuthor, setAuthor } from './app.js';
-import { getMessages, onNewMessage, sendMessage, retrieveCachedMessages } from './messaging-service.js';
+import { sendMessage } from './messaging-service.js';
 
 const mainContainer = document.getElementsByClassName('container')[0];
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
 const nameInput = document.getElementById('nameInput');
+let onScrollCb = function() {};
 
-export function setupUI() {
-    getMessages().then(resp => {
-        const messagesFragment = new DocumentFragment();
+export function setupUI(scrollCb) {
+    onScrollCb = scrollCb;
+    mainContainer.scrollTo(0, mainContainer.scrollHeight);
+    toggleLoadingNotification(false);
 
-        resp.messages.forEach(msg =>
-            messagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
-        );
-
-        messagesContainer.appendChild(messagesFragment);
-        mainContainer.scrollTo(0, mainContainer.scrollHeight);
-        toggleLoadingNotification(false);
-
-        onNewMessage(resp.latestTimestamp, message => {
-            messagesContainer.appendChild(createMessageDOM(message.author, message.text, new Date(message.timestamp)));
-        });
-    });
 
     document.getElementById('sendMessage').addEventListener('click', onSendMessage);
 
@@ -67,20 +57,7 @@ function onScrollTop(e) {
 
     if (scrollTop === 0) {
         toggleLoadingNotification(true);
-        getMessages().then(resp => {
-            if (resp.messages.length === 0) {
-                toggleLoadingNotification(false);
-            }
-            const tempMessagesFragment = new DocumentFragment();
-
-            resp.messages.forEach(msg =>
-                tempMessagesFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)))
-            );
-            const previousHeight = mainContainer.scrollHeight;
-
-            messagesContainer.insertBefore(tempMessagesFragment, messagesContainer.firstChild);
-            mainContainer.scrollTop = mainContainer.scrollHeight - previousHeight;
-        });
+        onScrollCb();
     }
 }
 
@@ -90,33 +67,35 @@ const toggleLoadingNotification = (function toggleNotificationIife() {
     return function(visible = true) {
         spinner.style.display = visible ? 'block' : 'none';
     };
-})();
+}());
 
-export async function paintCachedMessages() {
-    const cachedMessages = await retrieveCachedMessages();
-
-    if (cachedMessages.length) {
-        const messageDom = cachedMessages.reduce((msgFragment, msg) => {
-            msgFragment.appendChild(createMessageDOM(msg.author, msg.text, new Date(msg.timestamp)));
+export function updateUI(msgList) {
+    // TODO: create diff to only update differences in the messages
+    if (msgList.length) {
+        const messageDom = msgList.reduce((msgFragment, msg) => {
+            msgFragment.appendChild(createMessageDOM(msg.author, msg.text, msg.timestamp));
             return msgFragment;
         }, new DocumentFragment());
 
         messagesContainer.appendChild(messageDom);
     }
+    toggleLoadingNotification(false);
 }
 
 /** Utility Functions */
-function createMessageDOM(author, text, dateObject = new Date()) {
+function createMessageDOM(author, text, timestamp) {
     const element = document.createElement('div');
     element.classList.add('msg');
+    element.setAttribute('data-timestamp', timestamp);
 
-    const dateString = getDateString(dateObject);
+    const dateString = getDateString(timestamp);
 
     element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p><p class="msg__not-send">Not send</p>`;
     return element;
 }
 
-function getDateString(dateObject) {
+function getDateString(timestamp) {
+    const dateObject = timestamp ? new Date(timestamp) : new Date();
     let hours = dateObject.getHours();
     if (hours < 10) {
         hours = `0${hours}`;
