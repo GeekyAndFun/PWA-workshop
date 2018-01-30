@@ -1,14 +1,12 @@
-import { setupUI, displayAuthor } from './scripts/ui.js';
+import { displayAuthor } from './scripts/ui.js';
 import { setupServiceWorker } from './scripts/app.js';
+import { dispatchGetCachedMsgs, dispatchGetServerMsgs } from './scripts/messaging-controller.js';
 
-const indexedDbStoreConfigs = Object.keys(appConfig.dbConfigs).map(key => appConfig.dbConfigs[key]);
 
-setupUI();
-setupServiceWorker();
-IndexedDb.setupDbStores('GeekyDatabase', 1, indexedDbStoreConfigs).then(() => {
+const indexedDbStoreConfigs = Object.keys(AppConfig.dbConfigs).map(key => AppConfig.dbConfigs[key]);
+IndexedDb.setupDbStores(AppConfig.dbName, AppConfig.dbVersion, indexedDbStoreConfigs).then(() => {
+    dispatchGetCachedMsgs();
     displayAuthor();
 });
-
-// toggleLoadingOfMessages();
-// setupMessages();
-// toggleLoadingOfMessages();
+dispatchGetServerMsgs(true);
+setupServiceWorker();

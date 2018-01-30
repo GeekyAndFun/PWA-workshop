@@ -1,14 +1,3 @@
-/** Caching */
-importScripts('./caching-service-worker.js');
-
-/** Firebase Init */
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
-importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
-
-importScripts('./indexeddb.js');
-importScripts('./appConfig.js');
-
 const config = {
     apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
     authDomain: 'geek-alert.firebaseapp.com',
@@ -18,31 +7,44 @@ const config = {
     messagingSenderId: '1044469279944'
 };
 
-firebase.initializeApp(config);
+let databaseRef;
+self.addEventListener('install', () => {
+    /** Caching */
+    importScripts('./caching-service-worker.js');
 
-const databaseRef = firebase.database().ref('/messages');
+    /** Firebase Init */
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
+    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-async function sendMessage() {
-    await IndexedDb.setupDbConnection('GeekyDatabase', 1);
-    const cachedMessages = await IndexedDb.readRecords(appConfig.dbConfigs.messagesConfig.name);
-    const unsentMessages = cachedMessages.filter(record => record.unsent);
-
-    return Promise.all(unsentMessages.map(msg => databaseRef.push(msg).then(() => {
-        IndexedDb.updateRecord(appConfig.dbConfigs.messagesConfig, Object.assign({}, msg, { unsent: false }), msg.timestamp);
-    })));
-}
+    importScripts('./appConfig.js');
+    importScripts('./common.js');
+    firebase.initializeApp(config);
+    databaseRef = firebase.database().ref('/messages');
+    firebase.messaging().setBackgroundMessageHandler(onPushNotification);
+    console.log('mama ta nu se reincarca 3');
+});
 
 self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
-        event.waitUntil(sendMessage());
+        event.waitUntil(
+            self.sendCachedMessages(databaseRef).then(() => {
+                onPushNotification({
+                    data: {
+                        text: 'Messages have been sent in the background!',
+                        author: 'App',
+                        timestamp: Date.now()
+                    }
+                });
+            })
+        );
     }
 });
 
 /** Push Notifications */
-firebase.messaging().setBackgroundMessageHandler(onPushNotification);
-
 function onPushNotification(payload) {
     const title = 'Geeky & Fun';
+
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
         body: `${payload.data.text}${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`,

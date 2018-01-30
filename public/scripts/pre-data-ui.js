@@ -2,12 +2,10 @@ const DEFAULT_FOOTER_HEIGHT = '50px';
 const MAX_FOOTER_HEIGHT = 150;
 const ONBOARDING_DELAY = 3000;
 
-let footer = document.getElementsByTagName('footer')[0];
+const footer = document.getElementsByTagName('footer')[0];
+const textarea = document.getElementsByTagName('textarea')[0];
+const offlineIcon = document.getElementById('offlineIcon');
 let overlay = document.getElementById('overlay');
-let textarea = document.getElementsByTagName('textarea')[0];
-
-console.log('ceva doi de SSS !!!');
-console.log('ceva doi de SSS !!!');
 
 document.getElementById('headerIconContainer').addEventListener('click', () => {
     document.body.classList.toggle('menu--visible');
@@ -31,3 +29,14 @@ if (!window.localStorage.getItem('onboarding')) {
         overlay.style.display = 'block';
     }, ONBOARDING_DELAY);
 }
+
+window.isOnline = true;
+window.addEventListener('offline', () => {
+    window.isOnline = false;
+    offlineIcon.style.display = 'block';
+});
+
+window.addEventListener('online', () => {
+    window.isOnline = true;
+    offlineIcon.style.display = 'none';
+});

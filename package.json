@@ -4,7 +4,7 @@
   "url": "https://geekyandfun.github.io/PWA-workshop/",
   "license": "MIT",
   "scripts": {
-    "start": "light-server -s .",
+    "start": "light-server -s . no-reload",
     "sw:build": "node sw-precache-config.js"
   },
   "private": false,

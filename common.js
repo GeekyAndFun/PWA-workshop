@@ -1,3 +1,4 @@
+/** IndexedDB Singleton */
 const IndexedDb = (function() {
     let db;
     class IndexedDbClass {
@@ -5,14 +6,14 @@ const IndexedDb = (function() {
             db = null;
         }
         /**
-     *
-     * @param {Array<Object<{storeName: String, config: Object}>>} storeConfigs
-     */
+         *
+         * @param {Array<Object<{storeName: String, config: Object}>>} storeConfigs
+         */
         setupDbStores(dbName, dbVersion, storeConfigs) {
             return new Promise((resolve, reject) => {
                 const clientDatabase = indexedDB.open(dbName, dbVersion);
                 clientDatabase.onupgradeneeded = function(e) {
-                    storeConfigs.forEach((storeConfig) => {
+                    storeConfigs.forEach(storeConfig => {
                         if (!e.target.result.objectStoreNames.contains(storeConfig.name)) {
                             e.target.result.createObjectStore(storeConfig.name, storeConfig.config);
                         }
@@ -51,7 +52,7 @@ const IndexedDb = (function() {
             db = null;
         }
 
-        insertRecord(storeName, data, key) {
+        pushRecord(storeName, data, key) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([storeName], 'readwrite');
                 const store = transaction.objectStore(storeName);
@@ -66,6 +67,10 @@ const IndexedDb = (function() {
                     resolve();
                 };
             });
+        }
+
+        shiftRecord(storeName) {
+            return this.getStoreKeys(storeName).then(resp => this.deleteRecord(storeName, resp[0]));
         }
 
         updateRecord(storeName, data, key) {
@@ -118,6 +123,41 @@ const IndexedDb = (function() {
                 };
             });
         }
+
+        getStoreKeys(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readonly');
+                const store = transaction.objectStore(storeName);
+
+                const request = store.getAllKeys();
+
+                request.onerror = function() {
+                    reject();
+                };
+
+                request.onsuccess = function(e) {
+                    resolve(e.target.result);
+                };
+            });
+        }
     }
     return new IndexedDbClass();
 }());
+
+/** Common Functions */
+async function sendCachedMessages(databaseRef) {
+    await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
+    const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
+    const unsentMessages = cachedMessages.filter(record => record.unsent);
+
+    return Promise.all(
+        unsentMessages.map(msg =>
+            databaseRef.push(Object.assign({}, msg, { timestamp: Date.now() })).then(() => {
+                IndexedDb.updateRecord(
+                    AppConfig.dbConfigs.messagesConfig.name,
+                    Object.assign({}, msg, { timestamp: Date.now(), unsent: false })
+                );
+            })
+        )
+    );
+}
