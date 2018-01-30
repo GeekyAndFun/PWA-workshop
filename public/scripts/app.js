@@ -1,15 +1,18 @@
-import { setUpMessagingPushNotifications } from './messaging-service.js';
+import { onServiceWorkerInit } from './messaging-service.js';
 
 export const setupServiceWorker = () => {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../../geeky-service-worker.js').then(
             registration => {
-                setUpMessagingPushNotifications(registration);
+                onServiceWorkerInit(true, registration);
             },
             err => {
-                console.error(`Service Worker failed ${err}`);
+                onServiceWorkerInit(false);
+                console.error(err);
             }
         );
+    } else {
+        onServiceWorkerInit(false);
     }
 };
 
@@ -20,5 +23,7 @@ export function setAuthor(authorName) {
 
 export function getAuthor() {
     // TODO: write login service and get author from there. Index db should only hold the logged user in bettween sessions
-    return IndexedDb.readRecords(AppConfig.dbConfigs.userConfig.name, 'currentAuthor').then(author => author || 'John Doe');
+    return IndexedDb.readRecords(AppConfig.dbConfigs.userConfig.name, 'currentAuthor').then(
+        author => author || 'John Doe'
+    );
 }

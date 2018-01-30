@@ -17,34 +17,18 @@ self.addEventListener('install', () => {
     importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
     importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-    importScripts('./indexeddb.js');
     importScripts('./appConfig.js');
+    importScripts('./common.js');
     firebase.initializeApp(config);
     databaseRef = firebase.database().ref('/messages');
     firebase.messaging().setBackgroundMessageHandler(onPushNotification);
     console.log('mama ta nu se reincarca 3');
 });
-async function sendMessage() {
-    await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
-    const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
-    const unsentMessages = cachedMessages.filter(record => record.unsent);
-
-    return Promise.all(
-        unsentMessages.map(msg =>
-            databaseRef.push(Object.assign({}, msg, { timestamp: Date.now() })).then(() => {
-                IndexedDb.updateRecord(
-                    AppConfig.dbConfigs.messagesConfig.name,
-                    Object.assign({}, msg, { unsent: false })
-                );
-            })
-        )
-    );
-}
 
 self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
         event.waitUntil(
-            sendMessage().then(() => {
+            self.sendCachedMessages(databaseRef).then(() => {
                 onPushNotification({
                     data: {
                         text: 'Messages have been sent in the background!',
