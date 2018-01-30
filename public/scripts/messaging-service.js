@@ -79,7 +79,7 @@ export const getMessages = (function getMessagesIife() {
             });
         });
     };
-}());
+})();
 
 export function onNewMessage(latestTimestamp, callback) {
     return databaseRef
@@ -103,11 +103,14 @@ export function sendMessage(author, text) {
         text,
         timestamp: Date.now()
     };
+
     // TODO - gracefully degrade this to a script which auto sends when network is back.
     // It won't work in the background, but at least it will auto send when the app opened.
     if (!isOnline && 'serviceWorker' in navigator) {
         addMessageToCache(msg, true);
-        return navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
+        navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
+
+        return Promise.reject();
     }
     return databaseRef.push(msg);
 }
