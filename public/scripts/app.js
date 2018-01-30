@@ -1,7 +1,7 @@
 import { onServiceWorkerInit } from './messaging-service.js';
 
 export const setupServiceWorker = () => {
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && false) {
         navigator.serviceWorker.register('../../geeky-service-worker.js').then(
             registration => {
                 onServiceWorkerInit(true, registration);

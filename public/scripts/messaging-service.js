@@ -1,7 +1,6 @@
 const databaseRef = window.firebase.database().ref('/messages');
 const tokensRef = window.firebase.database().ref('/tokens');
 
-let isOnline = true;
 let hasServiceWorker = false;
 
 async function addMessageToCache(message, unsent) {
@@ -97,7 +96,7 @@ export function sendMessage(author, text) {
     };
 
     addMessageToCache(msg, true); // always cache latest stuff
-    if (!isOnline) {
+    if (!window.isOnline) {
         if (hasServiceWorker) {
             navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
         }
@@ -111,21 +110,14 @@ export function retrieveCachedMessages() {
 }
 
 export function onServiceWorkerInit(result, registration = null) {
-    window.addEventListener('offline', updateOnlineStatus);
-    window.addEventListener('online', updateOnlineStatus);
-
     if (result) {
         hasServiceWorker = true;
+
         setUpMessagingPushNotifications(registration);
     } else {
         hasServiceWorker = false;
-    }
-}
-
-/** Utility functions */
-function updateOnlineStatus() {
-    isOnline = navigator.onLine;
-    if (hasServiceWorker) {
-        window.sendCachedMessages(databaseRef).then(() => console.log('sent messages'));
+        window.addEventListener('online', () => {
+            window.sendCachedMessages(databaseRef).then(() => console.log('sent messages'));
+        });
     }
 }
