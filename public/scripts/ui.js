@@ -12,7 +12,6 @@ export function setupUI(scrollCb) {
     mainContainer.scrollTo(0, mainContainer.scrollHeight);
     toggleLoadingNotification(false);
 
-
     document.getElementById('sendMessage').addEventListener('click', onSendMessage);
 
     mainContainer.addEventListener('scroll', lazyDebounce(onScrollTop, 250));
@@ -69,7 +68,7 @@ const toggleLoadingNotification = (function toggleNotificationIife() {
     };
 }());
 
-export function updateUI(msgList) {
+export function updateUI(msgList, clear = false) {
     // TODO: create diff to only update differences in the messages
     if (msgList.length) {
         const messageDom = msgList.reduce((msgFragment, msg) => {
@@ -77,7 +76,14 @@ export function updateUI(msgList) {
             return msgFragment;
         }, new DocumentFragment());
 
-        messagesContainer.appendChild(messageDom);
+        if (clear) {
+            messagesContainer.innerHTML = null;
+            messagesContainer.appendChild(messageDom);
+        } else if (!messagesContainer.firstChild) {
+            messagesContainer.appendChild(messageDom);
+        } else {
+            messagesContainer.insertBefore(messageDom, messagesContainer.firstChild);
+        }
     }
     toggleLoadingNotification(false);
 }

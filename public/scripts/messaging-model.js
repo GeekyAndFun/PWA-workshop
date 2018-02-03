@@ -2,16 +2,17 @@ import { getMessages, retrieveCachedMessages, onNewMessage } from './messaging-s
 
 let messages = [];
 function mergeArrays(arr1, arr2) {
+    const result = [];
+
     let i = 0;
     let j = 0;
-    const result = [];
     while (arr1[i] || arr2[j]) {
         if (!arr1[i]) {
-            return result.concat(arr2.slice(j, arr2.length));
+            return [...result, ...arr2.slice(j)];
         }
 
         if (!arr2[j]) {
-            return result.concat(arr1.slice(i, arr1.length));
+            return [...result, ...arr1.slice(i)];
         }
 
         if (arr1[i].timestamp < arr2[j].timestamp) {
@@ -31,6 +32,7 @@ function mergeArrays(arr1, arr2) {
     }
     return result;
 }
+
 function addNewMessages(msgs) {
     let messageArray;
     if (!Array.isArray(msgs)) {
@@ -41,15 +43,21 @@ function addNewMessages(msgs) {
     messages = mergeArrays(messages, messageArray);
     return JSON.parse(JSON.stringify(messages));
 }
-export function getServerMsgs(onInit) {
-    return getMessages().then(resp => {
+
+export function getServerMsgs(onInit, callbackF) {
+    getMessages().then(resp => {
         if (onInit) {
-            onNewMessage(resp.latestTimestamp, addNewMessages);
+            onNewMessage(resp.latestTimestamp, msgResp => {
+                addNewMessages(msgResp);
+                callbackF(JSON.parse(JSON.stringify(messages)));
+            });
         }
+
         messages = mergeArrays(messages, resp.messages);
-        return JSON.parse(JSON.stringify(messages));
+        callbackF(JSON.parse(JSON.stringify(resp.messages)));
     });
 }
+
 export function getCachedMsgs() {
     return retrieveCachedMessages().then(resp => {
         messages = mergeArrays(messages, resp);

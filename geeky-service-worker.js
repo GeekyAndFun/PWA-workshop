@@ -8,10 +8,11 @@ const config = {
 };
 
 let databaseRef;
-self.addEventListener('install', () => {
-    /** Caching */
-    importScripts('./caching-service-worker.js');
 
+/** Caching */
+importScripts('./caching-service-worker.js');
+
+self.addEventListener('install', () => {
     /** Firebase Init */
     importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
     importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
@@ -22,7 +23,7 @@ self.addEventListener('install', () => {
     firebase.initializeApp(config);
     databaseRef = firebase.database().ref('/messages');
     firebase.messaging().setBackgroundMessageHandler(onPushNotification);
-    console.log('mama ta nu se reincarca 3');
+    console.log('mama ta nu se reincarca 4');
 });
 
 self.addEventListener('sync', event => {

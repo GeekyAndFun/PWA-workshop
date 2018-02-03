@@ -206,6 +206,8 @@ footer button.loading:hover .spinner > div {
 #menu {
     position: fixed;
     display: none;
+    max-width: 960px;
+    margin: 0 auto;
     top: 80px;
     right: 0;
     bottom: 0;
