@@ -14,7 +14,8 @@
         "firebase": true,
         "IndexedDb": true,
         "indexedDB": true,
-        "AppConfig": true
+        "AppConfig": true,
+        "location": true
     },
     "rules": {
         "arrow-parens": "off",
@@ -30,6 +31,8 @@
                 "SwitchCase": 1
             }
         ],
+        "prefer-arrow-callback": "off",
+        "no-shadow": "off",
         "no-param-reassign": "error",
         "space-before-function-paren": [
             "error",

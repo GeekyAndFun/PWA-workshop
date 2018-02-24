@@ -1,3 +1,7 @@
+const CACHE_VERSION = 3;
+const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
+const PRECACHE_MANIFEST = 'resources-manifest.json';
+
 const config = {
     apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
     authDomain: 'geek-alert.firebaseapp.com',
@@ -9,21 +13,45 @@ const config = {
 
 let databaseRef;
 
-/** Caching */
-importScripts('./caching-service-worker.js');
+self.addEventListener('install', event => {
+    event.waitUntil(
+        new Promise((resolve, reject) => {
+            /** Firebase Init */
+            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
+            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
+            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-self.addEventListener('install', () => {
-    /** Firebase Init */
-    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
-    importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
+            importScripts('./appConfig.js');
+            importScripts('./common.js');
+            firebase.initializeApp(config);
+            databaseRef = firebase.database().ref('/messages');
+            firebase.messaging().setBackgroundMessageHandler(onPushNotification);
 
-    importScripts('./appConfig.js');
-    importScripts('./common.js');
-    firebase.initializeApp(config);
-    databaseRef = firebase.database().ref('/messages');
-    firebase.messaging().setBackgroundMessageHandler(onPushNotification);
-    console.log('mama ta nu se reincarca 4');
+            /** Precache init */
+            caches
+                .open(CACHE_NAME)
+                .then(cache => {
+                    fetch(PRECACHE_MANIFEST).then(resp => {
+                        resp.json().then(jsonResp => {
+                            Promise.all(
+                                jsonResp.TO_PRECACHE.map(url =>
+                                    fetch(url).then(resp => {
+                                        cache.put(url, resp);
+                                    })
+                                )
+                            ).then(() => {
+                                // Delete old caches
+                                caches.keys().then(keys => {
+                                    keys.filter(key => key !== CACHE_NAME).forEach(key => caches.delete(key));
+                                });
+                                resolve();
+                            });
+                        });
+                    });
+                })
+                .catch(reject);
+        })
+    );
 });
 
 self.addEventListener('sync', event => {
@@ -41,6 +69,20 @@ self.addEventListener('sync', event => {
         );
     }
 });
+
+/** Caching */
+self.addEventListener('fetch', function onFetch(event) {
+    if (event.request.url.indexOf(location.origin) === 0) {
+        event.respondWith(precacheResourceOrNetwork(event));
+    }
+});
+
+function precacheResourceOrNetwork(event) {
+    return caches
+        .match(event.request, { cacheName: CACHE_NAME })
+        .then(resp => resp || fetch(event.request))
+        .catch(() => fetch(event.request));
+}
 
 /** Push Notifications */
 function onPushNotification(payload) {
