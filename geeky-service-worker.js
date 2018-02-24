@@ -12,6 +12,7 @@ const config = {
 };
 
 let databaseRef;
+console.log("test");
 
 self.addEventListener('install', event => {
     event.waitUntil(
