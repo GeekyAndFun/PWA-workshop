@@ -8,10 +8,9 @@
         "public/images/offline.png",
         "public/style.css",
         "public/main.js",
-        "public/scripts/app.js",
-        "public/scripts/messaging-service.js",
-        "public/scripts/messaging-controller.js",
-        "public/scripts/pre-data-ui.js",
-        "public/scripts/ui.js"
+        "resources-manifest.json",
+        "public/simple-scripts/interactive.js",
+        "public/simple-scripts/simple-controller.js",
+        "public/simple-scripts/simple-ui.js"
     ]
 }

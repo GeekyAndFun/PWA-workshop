@@ -59,13 +59,8 @@ const IndexedDb = (function() {
 
                 const request = store.add(data, key);
 
-                request.onerror = function() {
-                    reject();
-                };
-
-                request.onsuccess = function() {
-                    resolve();
-                };
+                request.onerror = reject;
+                request.onsuccess = resolve;
             });
         }
 
@@ -80,13 +75,8 @@ const IndexedDb = (function() {
 
                 const request = store.put(data, key);
 
-                request.onerror = function() {
-                    reject();
-                };
-
-                request.onsuccess = function() {
-                    resolve();
-                };
+                request.onerror = reject;
+                request.onsuccess = resolve;
             });
         }
 
@@ -97,9 +87,7 @@ const IndexedDb = (function() {
 
                 const request = key !== undefined && key !== null ? store.get(key) : store.getAll();
 
-                request.onerror = function() {
-                    reject();
-                };
+                request.onerror = reject;
 
                 request.onsuccess = function(e) {
                     resolve(e.target.result);
@@ -114,13 +102,20 @@ const IndexedDb = (function() {
 
                 const request = store.delete(key);
 
-                request.onerror = function() {
-                    reject();
-                };
+                request.onerror = reject;
+                request.onsuccess = resolve;
+            });
+        }
 
-                request.onsuccess = function() {
-                    resolve();
-                };
+        deleteAllRecords(storeName) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+
+                const request = store.clear();
+
+                request.onerror = reject;
+                request.onsuccess = resolve;
             });
         }
 
@@ -131,10 +126,7 @@ const IndexedDb = (function() {
 
                 const request = store.getAllKeys();
 
-                request.onerror = function() {
-                    reject();
-                };
-
+                request.onerror = reject;
                 request.onsuccess = function(e) {
                     resolve(e.target.result);
                 };
@@ -162,4 +154,14 @@ async function sendCachedMessages(databaseRef) {
     );
 }
 
-//TEST
+self.lazyDebounce = function(callback, delay) {
+    let timeout = null;
+    return function(e) {
+        if (timeout) {
+            window.clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            callback.call(this, e);
+        }, delay);
+    };
+}

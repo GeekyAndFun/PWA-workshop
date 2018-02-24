@@ -12,7 +12,6 @@ const config = {
 };
 
 let databaseRef;
-console.log("test");
 
 self.addEventListener('install', event => {
     event.waitUntil(
@@ -40,17 +39,20 @@ self.addEventListener('install', event => {
                                         cache.put(url, resp);
                                     })
                                 )
-                            ).then(() => {
-                                // Delete old caches
-                                caches.keys().then(keys => {
-                                    keys.filter(key => key !== CACHE_NAME).forEach(key => caches.delete(key));
-                                });
-                                resolve();
-                            });
+                            ).then(resolve);
                         });
                     });
                 })
                 .catch(reject);
+        })
+    );
+});
+
+self.addEventListener('activate', function onActivate(event) {
+    // here delete the CACHE!!!
+    event.waitUntil(
+        caches.keys().then(keys => {
+            keys.filter(key => key !== CACHE_NAME).forEach(key => caches.delete(key));
         })
     );
 });
@@ -73,6 +75,7 @@ self.addEventListener('sync', event => {
 
 /** Caching */
 self.addEventListener('fetch', function onFetch(event) {
+    console.log(event.request.url);
     if (event.request.url.indexOf(location.origin) === 0) {
         event.respondWith(precacheResourceOrNetwork(event));
     }
@@ -92,9 +95,9 @@ function onPushNotification(payload) {
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
         body: `${payload.data.text}${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`,
-        tag:"common-tag",
+        tag: 'common-tag',
         vibrate: [100, 50, 100, 50, 100, 50],
-        requireInteraction: true,
+        requireInteraction: true
     });
 }
 
