@@ -49,7 +49,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function onActivate(event) {
-    // here delete the CACHE!!!
     event.waitUntil(
         caches.keys().then(keys => {
             keys.filter(key => key !== CACHE_NAME).forEach(key => caches.delete(key));

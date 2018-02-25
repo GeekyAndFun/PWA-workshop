@@ -144,10 +144,10 @@ async function sendCachedMessages(databaseRef) {
 
     return Promise.all(
         unsentMessages.map(msg =>
-            databaseRef.push(Object.assign({}, msg, { timestamp: Date.now() })).then(() => {
+            databaseRef.push(Object.assign({}, msg, { unsent: false })).then(() => {
                 IndexedDb.updateRecord(
                     AppConfig.dbConfigs.messagesConfig.name,
-                    Object.assign({}, msg, { timestamp: Date.now(), unsent: false })
+                    Object.assign({}, msg, { unsent: false })
                 );
             })
         )

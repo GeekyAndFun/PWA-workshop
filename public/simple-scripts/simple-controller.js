@@ -58,7 +58,7 @@ function getMessagesAndUpdateDb(init) {
         .catch(() => {
             setTimeout(() => {
                 IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name).then(messages => {
-                    updateUI(messages);
+                    updateUI(messages.sort((a, b) => a.timestamp < b.timestamp));
                 });
             }, 1000);
         });
@@ -100,8 +100,6 @@ function setUpMessagingPushNotifications(registration) {
     messaging.onMessage(e => console.log(e));
 }
 
-
-
 // SEND MESSAGE
 function sendMessage(author, text) {
     if (!text) {
@@ -115,6 +113,7 @@ function sendMessage(author, text) {
 
     if (!navigator.onLine) {
         addMessageToCache(msg, true); // always cache latest stuff
+        appendMessage(msg);
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
@@ -131,17 +130,25 @@ function onNewMessage(latestTimestamp) {
         .on('child_added', data => {
             const value = data.val();
 
-            addMessageToCache(value);
-            appendMessage(value);
+            addMessageToCache(value).then(appendMessage);
+            // appendMessage(value);
         });
 }
 
-async function addMessageToCache(message, unsent) {
-    const storeKeys = await IndexedDb.getStoreKeys(AppConfig.dbConfigs.messagesConfig.name);
-    if (storeKeys.indexOf(message.timestamp) === -1) {
-        if (storeKeys.length >= 20) {
-            IndexedDb.shiftRecord(AppConfig.dbConfigs.messagesConfig.name);
-        }
-        IndexedDb.pushRecord(AppConfig.dbConfigs.messagesConfig.name, Object.assign({}, message, { unsent }));
-    }
+function addMessageToCache(message, unsent) {
+    return new Promise((resolve, reject) => {
+        IndexedDb.getStoreKeys(AppConfig.dbConfigs.messagesConfig.name).then(storeKeys => {
+            if (storeKeys.indexOf(message.timestamp) === -1) {
+                // if (storeKeys.length >= 20) {
+                //     IndexedDb.shiftRecord(AppConfig.dbConfigs.messagesConfig.name);
+                // }
+                const newMessage = Object.assign({}, message, { unsent });
+                IndexedDb.pushRecord(AppConfig.dbConfigs.messagesConfig.name, newMessage).then(() => {
+                    resolve(newMessage);
+                });
+            } else {
+                reject();
+            }
+        });
+    });
 }
