@@ -22,7 +22,7 @@ exports.subscribeToTopic = functions.database.ref('/tokens/{tokenId}').onWrite(s
 
     return admin
         .messaging()
-        .subscribeToTopic(registrationToken, TOPIC)
+        .subscribeToTopic(registrationToken, 'all')
         .then(response => {
             console.log('Successfully subscribed to topic:', response);
         })
@@ -30,3 +30,4 @@ exports.subscribeToTopic = functions.database.ref('/tokens/{tokenId}').onWrite(s
             console.error('Error subscribing to topic:', error);
         });
 });
+

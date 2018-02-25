@@ -67,6 +67,17 @@ body.menu--visible #headerIconContainer .flipper {
     height: 64px;
     border-radius: 50%;
 }
+
+#headerIconContainer #offlineIcon {
+    position: fixed;
+    top: 0;
+    right: -5px;
+    width: 32px;
+    height: 32px;
+    z-index: 2;
+    display: none;
+}
+
 #headerIconContainer img:hover {
     box-shadow: 5px 5px 20px black;
 }
@@ -88,6 +99,7 @@ body.menu--visible #headerIconContainer .flipper {
 .back {
     transform: rotateY(180deg);
 }
+
 /** Flipper Icon -- END*/
 
 #messagesWrapper {
@@ -102,10 +114,32 @@ body.menu--visible #headerIconContainer .flipper {
     margin: 0 auto;
     margin-bottom: 2em;
 }
+
 .msg__text {
     margin-bottom: 0;
     font-weight: bold;
 }
+.msg__not-sent {
+    display: none;
+}
+
+.msg.msg--not-sent {
+    border: 2px solid #bc2424ad;
+    box-shadow: 0px 0px 5px #bc2424ad;
+}
+
+.msg.msg--not-sent .msg__text {
+    margin-bottom: 0;
+}
+
+.msg.msg--not-sent .msg__not-sent {
+    font-weight: bold;
+    text-align: right;
+    color: red;
+    margin: 0;
+    display: block;
+}
+
 footer {
     position: fixed;
     bottom: 0;
@@ -143,24 +177,50 @@ footer button {
     outline: none;
 }
 
+footer button .text {
+    display: inline-block;
+}
+footer button .spinner {
+    display: none;
+}
+
+footer button.loading .text {
+    display: none;
+}
+
+footer button.loading .spinner {
+    display: inline-block;
+    margin: 0;
+}
+
 footer button:hover {
     color: #fff;
     background-color: #4141ac;
 }
 
+footer button.loading:hover .spinner > div {
+    background-color: #fff;
+}
+
 /** MENU--begin */
 #menu {
-    position: absolute;
+    position: fixed;
     display: none;
-    top: 0;
+    max-width: 960px;
+    margin: 0 auto;
+    top: 80px;
     right: 0;
     bottom: 0;
     left: 0;
-    min-height: 700px;
     background-color: #4141ac;
     color: #fff;
     text-align: center;
     padding-top: 2em;
+    overflow: auto;
+}
+
+#menu .menu-content {
+    min-height: 700px;
 }
 
 body.menu--visible #menu {
@@ -251,6 +311,42 @@ body.menu--visible footer {
     text-align: center;
     font-weight: bold;
     font-size: 2em;
+}
+
+/** Spinner - from http://tobiasahlin.com/ */
+.spinner {
+    margin: 1em auto 0 auto;
+    width: 70px;
+    text-align: center;
+}
+
+.spinner > div {
+    width: 18px;
+    height: 18px;
+    background-color: #4141ac;
+
+    border-radius: 100%;
+    display: inline-block;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    animation-delay: -0.16s;
+}
+
+@keyframes sk-bouncedelay {
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
 }
 
 /** RESPONSIVE-ness */

@@ -13,7 +13,9 @@
         "importScripts": true,
         "firebase": true,
         "IndexedDb": true,
-        "indexedDB": true
+        "indexedDB": true,
+        "AppConfig": true,
+        "location": true
     },
     "rules": {
         "arrow-parens": "off",
@@ -29,6 +31,8 @@
                 "SwitchCase": 1
             }
         ],
+        "prefer-arrow-callback": "off",
+        "no-shadow": "off",
         "no-param-reassign": "error",
         "space-before-function-paren": [
             "error",
@@ -59,6 +63,7 @@
         "no-restricted-globals": "off",
         "func-names": 0,
         "import/extensions": ["error", "always"],
-        "import/no-extraneous-dependencies": "off"
+        "import/no-extraneous-dependencies": "off",
+        "no-console": "off"
     }
 }
