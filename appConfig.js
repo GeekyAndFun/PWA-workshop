@@ -5,4 +5,5 @@ const AppConfig = {
         userConfig: { name: 'AuthorStore' },
         messagesConfig: { name: 'CachedMsg', config: { keyPath: 'timestamp' } },
     },
+    BACKGROUND_SYNC: 'BACKGROUND_SYNC'
 };
