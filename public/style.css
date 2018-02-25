@@ -119,20 +119,20 @@ body.menu--visible #headerIconContainer .flipper {
     margin-bottom: 0;
     font-weight: bold;
 }
-.msg__not-send {
+.msg__not-sent {
     display: none;
 }
 
-.msg.msg--not-send {
+.msg.msg--not-sent {
     border: 2px solid #bc2424ad;
     box-shadow: 0px 0px 5px #bc2424ad;
 }
 
-.msg.msg--not-send .msg__text {
+.msg.msg--not-sent .msg__text {
     margin-bottom: 0;
 }
 
-.msg.msg--not-send .msg__not-send {
+.msg.msg--not-sent .msg__not-sent {
     font-weight: bold;
     text-align: right;
     color: red;

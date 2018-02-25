@@ -1,8 +1,7 @@
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 1;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
-
-const config = {
+const FIREBASE_CONFIG = {
     apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
     authDomain: 'geek-alert.firebaseapp.com',
     databaseURL: 'https://geek-alert.firebaseio.com',
@@ -16,16 +15,17 @@ let databaseRef;
 self.addEventListener('install', event => {
     event.waitUntil(
         new Promise((resolve, reject) => {
+            importScripts('./appConfig.js');
+            importScripts('./common.js');
+
             /** Firebase Init */
             importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
             importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
             importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
 
-            importScripts('./appConfig.js');
-            importScripts('./common.js');
-            firebase.initializeApp(config);
+            firebase.initializeApp(FIREBASE_CONFIG);
             databaseRef = firebase.database().ref('/messages');
-            firebase.messaging().setBackgroundMessageHandler(onPushNotification);
+            firebase.messaging().setBackgroundMessageHandler(displayNotification);
 
             /** Precache init */
             caches
@@ -60,7 +60,7 @@ self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
         event.waitUntil(
             self.sendCachedMessages(databaseRef).then(() => {
-                onPushNotification({
+                displayNotification({
                     data: {
                         text: 'Messages have been sent in the background!',
                         author: 'App',
@@ -72,9 +72,7 @@ self.addEventListener('sync', event => {
     }
 });
 
-/** Caching */
 self.addEventListener('fetch', function onFetch(event) {
-    console.log(event.request.url);
     if (event.request.url.indexOf(location.origin) === 0) {
         event.respondWith(precacheResourceOrNetwork(event));
     }
@@ -87,30 +85,14 @@ function precacheResourceOrNetwork(event) {
         .catch(() => fetch(event.request));
 }
 
-/** Push Notifications */
-function onPushNotification(payload) {
+function displayNotification(payload) {
     const title = 'Geeky & Fun';
 
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
-        body: `${payload.data.text}${payload.data.author} | ${getDateString(new Date(Number(payload.data.timestamp)))}`,
+        body: `${payload.data.text}${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
         tag: 'common-tag',
         vibrate: [100, 50, 100, 50, 100, 50],
         requireInteraction: true
     });
-}
-
-/** Utils */
-function getDateString(dateObject) {
-    let hours = dateObject.getHours();
-    if (hours < 10) {
-        hours = `0${hours}`;
-    }
-
-    let minutes = dateObject.getMinutes();
-    if (minutes < 10) {
-        minutes = `0${minutes}`;
-    }
-
-    return `${hours}:${minutes}`;
 }

@@ -10,7 +10,7 @@ let onScrollCb = function() {};
 export function setupUI(scrollCb, sendMessageCb) {
     onScrollCb = scrollCb;
     mainContainer.scrollTo(0, mainContainer.scrollHeight);
-    toggleLoadingNotification(false);
+    toggleLoadingSpinner(false);
 
     sendButton.addEventListener('click', () => {
         onSendMessage(sendMessageCb);
@@ -35,7 +35,7 @@ export function updateUI(msgList, clear = false) {
             messagesContainer.insertBefore(messageDom, messagesContainer.firstChild);
         }
     }
-    toggleLoadingNotification(false);
+    toggleLoadingSpinner(false);
 }
 
 export function appendMessage(message) {
@@ -50,11 +50,12 @@ function onSendMessage(sendMessageCb) {
     sendMessageCb(nameInput.value, textarea.value).then(
         () => {
             textarea.value = null;
-            sendButton.classList.toggle('loading');
             sendButton.disabled = false;
+            sendButton.classList.toggle('loading');
         },
         () => {
             textarea.value = null;
+            sendButton.disabled = false;
             sendButton.classList.toggle('loading');
         }
     );
@@ -64,12 +65,12 @@ function onScrollTop(e) {
     const { scrollTop } = e.srcElement;
 
     if (scrollTop === 0) {
-        toggleLoadingNotification(true);
+        toggleLoadingSpinner(true);
         onScrollCb();
     }
 }
 
-const toggleLoadingNotification = (function toggleNotificationIife() {
+const toggleLoadingSpinner = (function toggleNotificationIife() {
     const spinner = document.getElementById('messages-loading');
 
     return function(visible = true) {
@@ -83,23 +84,8 @@ function createMessageDOM(author, text, timestamp) {
     element.classList.add('msg');
     element.setAttribute('data-timestamp', timestamp);
 
-    const dateString = getDateString(timestamp);
+    const dateString = window.getDateString(new Date(timestamp));
 
-    element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p><p class="msg__not-send">Not send</p>`;
+    element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p><p class="msg__not-sent">Not send</p>`;
     return element;
-}
-
-function getDateString(timestamp) {
-    const dateObject = timestamp ? new Date(timestamp) : new Date();
-    let hours = dateObject.getHours();
-    if (hours < 10) {
-        hours = `0${hours}`;
-    }
-
-    let minutes = dateObject.getMinutes();
-    if (minutes < 10) {
-        minutes = `0${minutes}`;
-    }
-
-    return `${hours}:${minutes}`;
 }

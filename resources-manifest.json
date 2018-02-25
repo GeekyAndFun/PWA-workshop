@@ -5,12 +5,12 @@
         "public/images/icon.png",
         "public/images/icon--flipped.png",
         "public/images/offline.png",
-        "common.js",
         "appConfig.js",
-        "resources-manifest.json",
+        "common.js",
         "manifest.json",
-        "public/simple-scripts/interactive.js",
-        "public/simple-scripts/simple-controller.js",
-        "public/simple-scripts/simple-ui.js"
+        "resources-manifest.json",        
+        "public/scripts/interactive.js",
+        "public/scripts/app.js",
+        "public/scripts/view.js"
     ]
 }
