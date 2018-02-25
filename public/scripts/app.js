@@ -1,4 +1,4 @@
-import { appendMessage, setupUI, updateUI } from './view.js';
+import { appendMessage, cleanUnsentMessages, setupUI, updateUI } from './view.js';
 
 const databaseRef = window.firebase.database().ref('/messages');
 const getMessages = (function getMessagesIife() {
@@ -73,6 +73,11 @@ function getMessagesAndUpdateDb(init) {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('../../service-worker.js').then(
         registration => {
+            navigator.serviceWorker.onmessage = function(event) {
+                if(event.data === AppConfig.BACKGROUND_SYNC) {
+                    cleanUnsentMessages();
+                }
+            };
             setUpMessagingPushNotifications(registration);
         },
         err => {
@@ -112,7 +117,7 @@ function sendMessage(author, text) {
     };
 
     if (!navigator.onLine) {
-        addMessageToCache(msg, true).then(appendMessage);
+        addMessageToCache(msg, true).then(msg => appendMessage(msg, true));
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));

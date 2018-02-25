@@ -151,6 +151,9 @@ footer {
     padding: 0 10px;
     box-sizing: border-box;
 }
+footer form {
+    height: 100%;
+}
 
 footer textarea {
     resize: none;

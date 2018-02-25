@@ -1,8 +1,10 @@
 const mainContainer = document.getElementsByClassName('container')[0];
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
+const form = document.getElementById('messageForm');
 const sendButton = document.getElementById('sendMessage');
 const nameInput = document.getElementById('nameInput');
+const spinner = document.getElementById('messages-loading');
 
 let onScrollCb = function() {};
 
@@ -12,7 +14,14 @@ export function setupUI(scrollCb, sendMessageCb) {
     mainContainer.scrollTo(0, mainContainer.scrollHeight);
     toggleLoadingSpinner(false);
 
-    sendButton.addEventListener('click', () => {
+    textarea.addEventListener('keypress', event => {
+        if (event.keyCode === 13 && event.shiftKey) {
+            onSendMessage(sendMessageCb);
+        }
+    });
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
         onSendMessage(sendMessageCb);
     });
 
@@ -38,8 +47,16 @@ export function updateUI(msgList, clear = false) {
     toggleLoadingSpinner(false);
 }
 
-export function appendMessage(message) {
-    messagesContainer.appendChild(createMessageDOM(message.author, message.text, message.timestamp));
+export function appendMessage(message, unsent = false) {
+    messagesContainer.appendChild(createMessageDOM(message.author, message.text, message.timestamp, unsent));
+}
+
+export function cleanUnsentMessages() {
+    const unsentMessages = messagesContainer.querySelectorAll('.msg.msg--not-sent');
+
+    unsentMessages.forEach(unsentMsg => {
+        messagesContainer.removeChild(unsentMsg);
+    });
 }
 
 /** HELPER FUNCTIONS */
@@ -70,18 +87,17 @@ function onScrollTop(e) {
     }
 }
 
-const toggleLoadingSpinner = (function toggleNotificationIife() {
-    const spinner = document.getElementById('messages-loading');
-
-    return function(visible = true) {
-        spinner.style.display = visible ? 'block' : 'none';
-    };
-}());
+function toggleLoadingSpinner(visible = true) {
+    spinner.style.display = visible ? 'block' : 'none';
+}
 
 /** Utility Functions */
-function createMessageDOM(author, text, timestamp) {
+function createMessageDOM(author, text, timestamp, unsent = false) {
     const element = document.createElement('div');
     element.classList.add('msg');
+    if (unsent) {
+        element.classList.add('msg--not-sent');
+    }
     element.setAttribute('data-timestamp', timestamp);
 
     const dateString = window.getDateString(new Date(timestamp));
