@@ -1,4 +1,4 @@
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 1;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
 const FIREBASE_CONFIG = {
@@ -25,7 +25,8 @@ self.addEventListener('install', event => {
 
             firebase.initializeApp(FIREBASE_CONFIG);
             databaseRef = firebase.database().ref('/messages');
-            firebase.messaging().setBackgroundMessageHandler(displayNotification);
+            // firebase.messaging();
+            // firebase.messaging().setBackgroundMessageHandler(displayNotification);
 
             /** Precache init */
             caches
@@ -102,9 +103,10 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 self.addEventListener('push', event => {
-    debugger;
-    console.log(event);
-})
+    event.waitUntil(
+        displayNotification(event.json())
+    );
+});
 
 function precacheResourceOrNetwork(event) {
     const clonedRequest = event.request.clone();
