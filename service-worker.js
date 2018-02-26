@@ -104,8 +104,7 @@ self.addEventListener('notificationclick', function(event) {
 function precacheResourceOrNetwork(event) {
     return caches
         .match(event.request, { cacheName: CACHE_NAME })
-        .then(resp => resp || fetch(event.request))
-        .catch(() => fetch(event.request));
+        .then(resp => resp || fetch(event.request));
 }
 
 function displayNotification(payload) {
