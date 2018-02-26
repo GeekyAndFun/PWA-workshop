@@ -127,6 +127,7 @@ function sendMessage(author, text) {
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage')).catch(() => {
+                alert('no sync');
                 window.removeEventListener('online', sendMessagesWhenOnline);
                 window.addEventListener('online', sendMessagesWhenOnline);
             });
@@ -169,5 +170,6 @@ function addMessageToCache(message, unsent) {
 }
 
 function sendMessagesWhenOnline() {
+    alert('sending messages from IndexedDB');
     window.sendCachedMessages(databaseRef).then(cleanUnsentMessages);
 }
