@@ -79,7 +79,7 @@ function onSendMessage(sendMessageCb) {
 }
 
 function onScrollTop(e) {
-    const { scrollTop } = e.srcElement;
+    const { scrollTop } = e.target;
 
     if (scrollTop === 0) {
         toggleLoadingSpinner(true);

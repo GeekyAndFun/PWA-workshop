@@ -27,14 +27,20 @@ const getMessages = (function getMessagesIife() {
                 if (messages.length > 0) {
                     latestTimestamp = messages[0].timestamp;
 
-                    resolve({ messages, latestTimestamp: messages[messages.length - 1].timestamp });
+                    resolve({
+                        messages,
+                        latestTimestamp: messages[messages.length - 1].timestamp
+                    });
                 } else {
-                    resolve({ messages, latestTimestamp });
+                    resolve({
+                        messages,
+                        latestTimestamp
+                    });
                 }
             });
         });
     };
-}());
+})();
 
 setupUI(function() {
     getMessagesAndUpdateDb(false);
@@ -74,7 +80,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('../../service-worker.js').then(
         registration => {
             navigator.serviceWorker.onmessage = function(event) {
-                if(event.data === AppConfig.BACKGROUND_SYNC) {
+                if (event.data === AppConfig.BACKGROUND_SYNC) {
                     cleanUnsentMessages();
                 }
             };
@@ -120,7 +126,13 @@ function sendMessage(author, text) {
         addMessageToCache(msg, true).then(msg => appendMessage(msg, true));
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
+            navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage')).catch(() => {
+                window.removeEventListener('online', sendMessagesWhenOnline);
+                window.addEventListener('online', sendMessagesWhenOnline);
+            });
+        } else {
+            window.removeEventListener('online', sendMessagesWhenOnline);
+            window.addEventListener('online', sendMessagesWhenOnline);
         }
         return Promise.reject();
     }
@@ -143,7 +155,9 @@ function addMessageToCache(message, unsent) {
     return new Promise((resolve, reject) => {
         IndexedDb.getStoreKeys(AppConfig.dbConfigs.messagesConfig.name).then(storeKeys => {
             if (storeKeys.indexOf(message.timestamp) === -1) {
-                const newMessage = Object.assign({}, message, { unsent });
+                const newMessage = Object.assign({}, message, {
+                    unsent
+                });
                 IndexedDb.pushRecord(AppConfig.dbConfigs.messagesConfig.name, newMessage).then(() => {
                     resolve(newMessage);
                 });
@@ -152,4 +166,8 @@ function addMessageToCache(message, unsent) {
             }
         });
     });
+}
+
+function sendMessagesWhenOnline() {
+    window.sendCachedMessages(databaseRef).then(cleanUnsentMessages);
 }
