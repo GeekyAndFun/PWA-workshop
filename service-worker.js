@@ -117,7 +117,7 @@ function displayNotification(payload) {
     const title = 'Geeky & Fun';
 
     return self.clients.matchAll({ type: 'window' }).then(windowClients => {
-        if (windowClients.filter(client => client.focused).length > 0) {
+        if (windowClients.filter(client => client.focused).length === 0) {
             return self.registration.showNotification(title, {
                 icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
                 body: `${payload.data.text}
