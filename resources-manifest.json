@@ -1,6 +1,7 @@
 {
     "TO_PRECACHE": [
         "/",
+        "/PWA-workshop/",
         "public/style.css",
         "public/images/icon.png",
         "public/images/icon--flipped.png",
