@@ -151,23 +151,6 @@ function getDateString(dateObject) {
     return `${hours}:${minutes}`;
 }
 
-async function sendCachedMessages(databaseRef) {
-    await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
-    const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
-    const unsentMessages = cachedMessages.filter(record => record.unsent);
-
-    return Promise.all(
-        unsentMessages.map(msg =>
-            databaseRef.push(Object.assign({}, msg, { unsent: false })).then(() => {
-                IndexedDb.updateRecord(
-                    AppConfig.dbConfigs.messagesConfig.name,
-                    Object.assign({}, msg, { unsent: false })
-                );
-            })
-        )
-    );
-}
-
 self.lazyDebounce = function(callback, delay) {
     let timeout = null;
     return function(e) {

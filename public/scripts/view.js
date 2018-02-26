@@ -51,14 +51,6 @@ export function appendMessage(message, unsent = false) {
     messagesContainer.appendChild(createMessageDOM(message.author, message.text, message.timestamp, unsent));
 }
 
-export function cleanUnsentMessages() {
-    const unsentMessages = messagesContainer.querySelectorAll('.msg.msg--not-sent');
-
-    unsentMessages.forEach(unsentMsg => {
-        messagesContainer.removeChild(unsentMsg);
-    });
-}
-
 /** HELPER FUNCTIONS */
 function onSendMessage(sendMessageCb) {
     sendButton.classList.toggle('loading');
