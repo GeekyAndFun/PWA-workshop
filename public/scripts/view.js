@@ -76,6 +76,7 @@ function onSendMessage(sendMessageCb) {
             sendButton.classList.toggle('loading');
         }
     );
+    updateGeekScore(textarea.value);
 }
 
 function onScrollTop(e) {
@@ -104,4 +105,40 @@ function createMessageDOM(author, text, timestamp, unsent = false) {
 
     element.innerHTML = `<p class="msg__text">${text}</p><p class="msg_author">${author} | ${dateString}</p><p class="msg__not-sent">Not send</p>`;
     return element;
+}
+
+/** Geek Score */
+function updateGeekScore(text) {
+    const geekPointsEl = document.getElementById('geekPoints');
+    const ranks = document.getElementsByClassName('rank');
+
+    const keywords = {
+        jquery: -10,
+        angular: 20,
+        react: 55,
+        pwa: 111,
+        progressive: 50,
+        web: 50,
+        app: 50
+    };
+
+    let score = Number(geekPointsEl.innerHTML);
+    Object.keys(keywords).forEach(key => {
+        if (text.indexOf(key) !== -1) {
+            score += keywords[key];
+        }
+    });
+
+    geekPointsEl.innerHTML = score;
+    for (let i = 0; i < ranks.length; i++) {
+        ranks[i].classList.remove('rank--is-current');
+    }
+
+    if (score >= 2000) {
+        ranks[0].classList.add('rank--is-current');
+    } else if (score >= 1000) {
+        ranks[1].classList.add('rank--is-current');
+    } else if (score >= 0) {
+        ranks[2].classList.add('rank--is-current');
+    }
 }
