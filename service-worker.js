@@ -25,8 +25,6 @@ self.addEventListener('install', event => {
 
             firebase.initializeApp(FIREBASE_CONFIG);
             databaseRef = firebase.database().ref('/messages');
-            // firebase.messaging();
-            // firebase.messaging().setBackgroundMessageHandler(displayNotification);
 
             /** Precache init */
             caches
