@@ -33,6 +33,7 @@
         ],
         "prefer-arrow-callback": "off",
         "no-shadow": "off",
+        "wrap-iife": "off",
         "no-param-reassign": "error",
         "space-before-function-paren": [
             "error",
