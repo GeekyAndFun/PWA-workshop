@@ -116,12 +116,17 @@ function precacheResourceOrNetwork(event) {
 function displayNotification(payload) {
     const title = 'Geeky & Fun';
 
-    return self.registration.showNotification(title, {
-        icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
-        body: `${payload.data.text}
+    return self.clients.matchAll({ type: 'window' }).then(windowClients => {
+        if (windowClients.filter(client => client.focused).length > 0) {
+            return self.registration.showNotification(title, {
+                icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
+                body: `${payload.data.text}
 ${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
-        tag: 'common-tag',
-        vibrate: [100, 50, 100, 50, 100, 50],
-        requireInteraction: false
+                tag: 'common-tag',
+                vibrate: [100, 50, 100, 50, 100, 50],
+                requireInteraction: false
+            });
+        }
+        return true;
     });
 }
