@@ -25,7 +25,6 @@ self.addEventListener('install', event => {
 
             firebase.initializeApp(FIREBASE_CONFIG);
             databaseRef = firebase.database().ref('/messages');
-            firebase.messaging().setBackgroundMessageHandler(displayNotification);
 
             /** Precache init */
             caches
@@ -98,6 +97,12 @@ self.addEventListener('notificationclick', function(event) {
             }
             return Promise.reject();
         })
+    );
+});
+
+self.addEventListener('push', event => {
+    event.waitUntil(
+        displayNotification(event.data.json())
     );
 });
 
