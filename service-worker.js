@@ -104,7 +104,7 @@ self.addEventListener('notificationclick', function(event) {
 
 self.addEventListener('push', event => {
     event.waitUntil(
-        displayNotification(event.json())
+        displayNotification(event.data.json())
     );
 });
 
