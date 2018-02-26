@@ -1,4 +1,4 @@
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 4;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
 const FIREBASE_CONFIG = {
@@ -102,7 +102,10 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 function precacheResourceOrNetwork(event) {
-    return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => resp || fetch(event.request));
+    return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => {
+        debugger;
+        resp || fetch(event.request);
+    });
 }
 
 function displayNotification(payload) {
