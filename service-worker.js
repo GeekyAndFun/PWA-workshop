@@ -1,4 +1,4 @@
-const CACHE_VERSION = 5;
+const CACHE_VERSION = 6;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
 const FIREBASE_CONFIG = {
@@ -102,9 +102,9 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 function precacheResourceOrNetwork(event) {
+    const clonedRequest = event.request.clone();
     return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => {
-        debugger;
-        return resp || fetch(event.request);
+        return resp || fetch(clonedRequest);
     });
 }
 
