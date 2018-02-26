@@ -101,6 +101,11 @@ self.addEventListener('notificationclick', function(event) {
     );
 });
 
+self.addEventListener('push', event => {
+    debugger;
+    console.log(event);
+})
+
 function precacheResourceOrNetwork(event) {
     const clonedRequest = event.request.clone();
     return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => {
