@@ -81,6 +81,26 @@ self.addEventListener('fetch', function onFetch(event) {
     }
 });
 
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window' }).then(clientList => {
+            for (let i = 0; i < clientList.length; i++) {
+                if (
+                    (clientList[i].url === location.origin || clientList[i].url.indexOf('localhost') !== -1) &&
+                    'focus' in clientList[i]
+                ) {
+                    return clientList[i].focus();
+                }
+            }
+            if (self.clients.openWindow) {
+                return self.clients.openWindow('https://geekyandfun.github.io/PWA-workshop/');
+            }
+            return Promise.reject();
+        })
+    );
+});
+
 function precacheResourceOrNetwork(event) {
     return caches
         .match(event.request, { cacheName: CACHE_NAME })
@@ -93,9 +113,8 @@ function displayNotification(payload) {
 
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
-        body: `${payload.data.text}${payload.data.author} | ${self.getDateString(
-            new Date(Number(payload.data.timestamp))
-        )}`,
+        body: `${payload.data.text}
+        ${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
         tag: 'common-tag',
         vibrate: [100, 50, 100, 50, 100, 50],
         requireInteraction: false
