@@ -1,4 +1,4 @@
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 6;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
 const FIREBASE_CONFIG = {
@@ -63,7 +63,7 @@ self.addEventListener('sync', event => {
                 self.clients.matchAll().then(clients => {
                     clients.forEach(client => client.postMessage(AppConfig.BACKGROUND_SYNC));
                 });
-                displayNotification({
+                return displayNotification({
                     data: {
                         text: 'Messages have been sent in the background!',
                         author: 'App',
@@ -102,9 +102,10 @@ self.addEventListener('notificationclick', function(event) {
 });
 
 function precacheResourceOrNetwork(event) {
-    return caches
-        .match(event.request, { cacheName: CACHE_NAME })
-        .then(resp => resp || fetch(event.request));
+    const clonedRequest = event.request.clone();
+    return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => {
+        return resp || fetch(clonedRequest);
+    });
 }
 
 function displayNotification(payload) {
@@ -113,7 +114,7 @@ function displayNotification(payload) {
     return self.registration.showNotification(title, {
         icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
         body: `${payload.data.text}
-        ${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
+${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
         tag: 'common-tag',
         vibrate: [100, 50, 100, 50, 100, 50],
         requireInteraction: false
