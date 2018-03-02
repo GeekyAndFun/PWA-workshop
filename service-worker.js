@@ -44,6 +44,10 @@ self.addEventListener('activate', function onActivate(event) {
 
 self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(AppConfig.FIREBASE_CONFIG);
+        }
+
         event.waitUntil(
             self.sendCachedMessages().then(() => {
                 self.clients.matchAll().then(clients => {
@@ -70,7 +74,9 @@ self.addEventListener('fetch', function onFetch(event) {
 self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(
-        self.clients.matchAll({ type: 'window' }).then(clientList => {
+        self.clients.matchAll({
+            type: 'window'
+        }).then(clientList => {
             for (let i = 0; i < clientList.length; i++) {
                 if (
                     (clientList[i].url === location.origin || clientList[i].url.indexOf('localhost') !== -1) &&
