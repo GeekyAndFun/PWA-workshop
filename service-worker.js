@@ -1,32 +1,13 @@
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 1;
 const CACHE_NAME = `GEEKY-CACHE-${CACHE_VERSION}`;
 const PRECACHE_MANIFEST = 'resources-manifest.json';
-const FIREBASE_CONFIG = {
-    apiKey: 'AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4',
-    authDomain: 'geek-alert.firebaseapp.com',
-    databaseURL: 'https://geek-alert.firebaseio.com',
-    projectId: 'geek-alert',
-    storageBucket: '',
-    messagingSenderId: '1044469279944'
-};
 
-let databaseRef;
+importScripts('./appConfig.js');
+importScripts('./common.js');
 
 self.addEventListener('install', event => {
     event.waitUntil(
         new Promise((resolve, reject) => {
-            importScripts('./appConfig.js');
-            importScripts('./common.js');
-
-            /** Firebase Init */
-            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
-            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
-            importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
-
-            firebase.initializeApp(FIREBASE_CONFIG);
-            databaseRef = firebase.database().ref('/messages');
-
-            /** Precache init */
             caches
                 .open(CACHE_NAME)
                 .then(cache => {
@@ -58,7 +39,7 @@ self.addEventListener('activate', function onActivate(event) {
 self.addEventListener('sync', event => {
     if (event.tag === 'sendMessage') {
         event.waitUntil(
-            self.sendCachedMessages(databaseRef).then(() => {
+            self.sendCachedMessages().then(() => {
                 self.clients.matchAll().then(clients => {
                     clients.forEach(client => client.postMessage(AppConfig.BACKGROUND_SYNC));
                 });
@@ -80,7 +61,7 @@ self.addEventListener('fetch', function onFetch(event) {
     }
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
     event.notification.close();
     event.waitUntil(
         self.clients.matchAll({ type: 'window' }).then(clientList => {
@@ -108,15 +89,17 @@ self.addEventListener('push', event => {
 
 function precacheResourceOrNetwork(event) {
     const clonedRequest = event.request.clone();
-    return caches.match(event.request, { cacheName: CACHE_NAME }).then(resp => {
-        return resp || fetch(clonedRequest);
-    });
+    return caches.match(event.request, {
+        cacheName: CACHE_NAME
+    }).then(resp => resp || fetch(clonedRequest));
 }
 
 function displayNotification(payload) {
     const title = 'Geeky & Fun';
 
-    return self.clients.matchAll({ type: 'window' }).then(windowClients => {
+    return self.clients.matchAll({
+        type: 'window'
+    }).then(windowClients => {
         if (windowClients.filter(client => client.focused).length === 0) {
             return self.registration.showNotification(title, {
                 icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',

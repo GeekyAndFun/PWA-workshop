@@ -55,12 +55,7 @@
         "linebreak-style": 0,
         "no-confusing-arrow": 0,
         "function-paren-newline": "off",
-        "object-curly-newline": [
-            "error",
-            {
-                "multiline": true
-            }
-        ],
+        "object-curly-newline": "off",
         "no-restricted-globals": "off",
         "func-names": 0,
         "import/extensions": ["error", "always"],
