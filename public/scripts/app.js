@@ -74,7 +74,7 @@ function getMessagesAndUpdateDb(init) {
         .catch(() => {
             if (init) {
                 IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name).then(messages => {
-                    updateUI(messages.sort((a, b) => a.timestamp < b.timestamp));
+                    updateUI(messages.sort((a, b) => a.timestamp > b.timestamp));
                 });
             }
         });
