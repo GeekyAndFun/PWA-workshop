@@ -98,15 +98,7 @@
     <!-- FIREBASE-start -->
     <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     <script>
-        var config = {
-            apiKey: "AIzaSyA6NrtU7Y-wcLH3UQnWDYNtRQvxWwYHTb4",
-            authDomain: "geek-alert.firebaseapp.com",
-            databaseURL: "https://geek-alert.firebaseio.com",
-            projectId: "geek-alert",
-            storageBucket: "",
-            messagingSenderId: "1044469279944"
-        };
-        firebase.initializeApp(config);
+        firebase.initializeApp(AppConfig.FIREBASE_CONFIG);
     </script>
     <!-- FIREBASE-end -->
 
