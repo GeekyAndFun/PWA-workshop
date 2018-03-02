@@ -149,7 +149,7 @@ self.getDateString = function (dateObject) {
     }
 
     return `${hours}:${minutes}`;
-}
+};
 
 async function sendCachedMessages(databaseRef) {
     if (window.firebase) {
@@ -186,4 +186,4 @@ self.lazyDebounce = function (callback, delay) {
             callback.call(this, e);
         }, delay);
     };
-}
+};
