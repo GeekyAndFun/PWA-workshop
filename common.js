@@ -152,8 +152,8 @@ self.getDateString = function (dateObject) {
 };
 
 async function sendCachedMessages(databaseRef) {
-    if (window.firebase) {
-        databaseRef = databaseRef || window.firebase.database().ref('/messages');
+    if (self.firebase) {
+        databaseRef = databaseRef || self.firebase.database().ref('/messages');
     };
 
     await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);

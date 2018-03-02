@@ -5,9 +5,15 @@ const PRECACHE_MANIFEST = 'resources-manifest.json';
 importScripts('./appConfig.js');
 importScripts('./common.js');
 
+/** Firebase Init */
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
+
 self.addEventListener('install', event => {
     event.waitUntil(
         new Promise((resolve, reject) => {
+            firebase.initializeApp(AppConfig.FIREBASE_CONFIG);
+
             caches
                 .open(CACHE_NAME)
                 .then(cache => {
