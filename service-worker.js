@@ -12,8 +12,6 @@ importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
 self.addEventListener('install', event => {
     event.waitUntil(
         new Promise((resolve, reject) => {
-            firebase.initializeApp(AppConfig.FIREBASE_CONFIG);
-
             caches
                 .open(CACHE_NAME)
                 .then(cache => {
@@ -35,6 +33,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function onActivate(event) {
+    firebase.initializeApp(AppConfig.FIREBASE_CONFIG);
+
     event.waitUntil(
         caches.keys().then(keys => {
             keys.filter(key => key !== CACHE_NAME).forEach(key => caches.delete(key));
