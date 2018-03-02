@@ -5,7 +5,6 @@ const MAX_FOOTER_HEIGHT = 150;
 const ONBOARDING_DELAY = 3000;
 
 const footer = document.getElementsByTagName('footer')[0];
-const form = document.getElementById('messageForm');
 const textarea = document.getElementsByTagName('textarea')[0];
 const offlineIcon = document.getElementById('offlineIcon');
 const nameInput = document.getElementById('nameInput');

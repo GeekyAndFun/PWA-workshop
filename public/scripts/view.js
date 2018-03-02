@@ -2,11 +2,12 @@ const mainContainer = document.getElementsByClassName('container')[0];
 const messagesContainer = document.getElementById('messagesWrapper');
 const textarea = document.getElementsByTagName('textarea')[0];
 const form = document.getElementById('messageForm');
+const footer = document.getElementsByTagName('footer')[0];
 const sendButton = document.getElementById('sendMessage');
 const nameInput = document.getElementById('nameInput');
 const spinner = document.getElementById('messages-loading');
 
-let onScrollCb = function() {};
+let onScrollCb = function () {};
 
 /** EXPORTED FUNCTIONS */
 export function setupUI(scrollCb, sendMessageCb) {
@@ -65,24 +66,21 @@ function onSendMessage(sendMessageCb) {
     sendButton.disabled = true;
 
     sendMessageCb(nameInput.value, textarea.value).then(
-        () => {
-            textarea.value = null;
-            sendButton.disabled = false;
-            sendButton.classList.toggle('loading');
-        },
-        () => {
-            textarea.value = null;
-            sendButton.disabled = false;
-            sendButton.classList.toggle('loading');
-        }
+        afterMessageSend,
+        afterMessageSend
     );
     updateGeekScore(textarea.value);
+
+    function afterMessageSend() {
+        textarea.value = null;
+        footer.style.height = '50px';
+        sendButton.disabled = false;
+        sendButton.classList.toggle('loading');
+    }
 }
 
 function onScrollTop(e) {
-    const { scrollTop } = e.target;
-
-    if (scrollTop === 0) {
+    if (e.target.scrollTop === 0) {
         toggleLoadingSpinner(true);
         onScrollCb();
     }

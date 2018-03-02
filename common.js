@@ -137,7 +137,7 @@ const IndexedDb = (function() {
 }());
 
 /** Common Functions */
-function getDateString(dateObject) {
+self.getDateString = function(dateObject) {
     let hours = dateObject.getHours();
     if (hours < 10) {
         hours = `0${hours}`;

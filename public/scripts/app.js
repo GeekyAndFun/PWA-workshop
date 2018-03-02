@@ -1,10 +1,15 @@
-import { appendMessage, cleanUnsentMessages, setupUI, updateUI } from './view.js';
+import {
+    appendMessage,
+    cleanUnsentMessages,
+    setupUI,
+    updateUI
+} from './view.js';
 
 const databaseRef = window.firebase.database().ref('/messages');
 const getMessages = (function getMessagesIife() {
     let latestTimestamp = null;
 
-    return function(size = 5) {
+    return function (size = 5) {
         let query = databaseRef.orderByChild('timestamp').startAt(0);
         if (typeof latestTimestamp === 'number') {
             query = query.endAt(latestTimestamp - 1);
@@ -42,7 +47,7 @@ const getMessages = (function getMessagesIife() {
     };
 })();
 
-setupUI(function() {
+setupUI(() => {
     getMessagesAndUpdateDb(false);
 }, sendMessage);
 
@@ -79,7 +84,7 @@ function getMessagesAndUpdateDb(init) {
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('../../service-worker.js').then(
         registration => {
-            navigator.serviceWorker.onmessage = function(event) {
+            navigator.serviceWorker.onmessage = (event) => {
                 if (event.data === AppConfig.BACKGROUND_SYNC) {
                     cleanUnsentMessages();
                 }
@@ -94,11 +99,14 @@ if ('serviceWorker' in navigator) {
 
 function setUpMessagingPushNotifications(registration) {
     const messaging = firebase.messaging();
+    let activeToken;
+
     messaging.useServiceWorker(registration);
     messaging
         .requestPermission()
         .then(() => {
             messaging.getToken().then(token => {
+                activeToken = token;
                 firebase
                     .database()
                     .ref(`tokens/${token}`)
@@ -109,7 +117,25 @@ function setUpMessagingPushNotifications(registration) {
             console.error('No permission...');
         });
 
-    messaging.onMessage(e => console.log(e));
+    messaging.onTokenRefresh(() => {
+        messaging.getToken()
+            .then((refreshedToken) => {
+                firebase
+                    .database()
+                    .ref(`tokens/${activeToken}`)
+                    .remove();
+                firebase
+                    .database()
+                    .ref(`tokens/${refreshedToken}`)
+                    .set(true);
+                activeToken = refreshedToken;
+            })
+            .catch((err) => {
+                console.error('Unable to retrieve refreshed token ', err);
+            });
+    });
+
+    // messaging.onMessage(e => console.log(e));
 }
 
 function sendMessage(author, text) {
