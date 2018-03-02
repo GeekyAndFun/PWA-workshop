@@ -59,7 +59,7 @@ self.addEventListener('sync', event => {
                         author: 'App',
                         timestamp: Date.now()
                     }
-                });
+                }, 'important');
             })
         );
     }
@@ -106,7 +106,7 @@ function precacheResourceOrNetwork(event) {
     }).then(resp => resp || fetch(clonedRequest));
 }
 
-function displayNotification(payload) {
+function displayNotification(payload, tag = 'common-tag') {
     const title = 'Geeky & Fun';
 
     return self.clients.matchAll({
@@ -117,7 +117,7 @@ function displayNotification(payload) {
                 icon: 'https://geekyandfun.github.io/PWA-workshop/public/images/icons/icon-512x512.png',
                 body: `${payload.data.text}
 ${payload.data.author} | ${self.getDateString(new Date(Number(payload.data.timestamp)))}`,
-                tag: 'common-tag',
+                tag,
                 vibrate: [100, 50, 100, 50, 100, 50],
                 requireInteraction: false
             });
