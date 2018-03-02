@@ -78,5 +78,4 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('../../service-worker.js').then(() =>{
         // some stuff here done later
     });
-    navigator.serviceWorker.ready.then(reg => reg.sync.register('sendMessage'));
 }
