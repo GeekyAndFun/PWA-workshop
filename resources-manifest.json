@@ -1,0 +1,16 @@
+{
+    "TO_PRECACHE": [
+        "/",
+        "public/style.css",
+        "public/images/icon.png",
+        "public/images/icon--flipped.png",
+        "public/images/offline.png",
+        "appConfig.js",
+        "common.js",
+        "manifest.json",
+        "resources-manifest.json",        
+        "public/scripts/interactive.js",
+        "public/scripts/app.js",
+        "public/scripts/view.js"
+    ]
+}
