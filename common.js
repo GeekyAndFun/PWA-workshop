@@ -1,5 +1,5 @@
 /** IndexedDB Singleton */
-const IndexedDb = (function() {
+const IndexedDb = (function () {
     let db;
     class IndexedDbClass {
         constructor() {
@@ -12,7 +12,7 @@ const IndexedDb = (function() {
         setupDbStores(dbName, dbVersion, storeConfigs) {
             return new Promise((resolve, reject) => {
                 const clientDatabase = indexedDB.open(dbName, dbVersion);
-                clientDatabase.onupgradeneeded = function(e) {
+                clientDatabase.onupgradeneeded = function (e) {
                     storeConfigs.forEach(storeConfig => {
                         if (!e.target.result.objectStoreNames.contains(storeConfig.name)) {
                             e.target.result.createObjectStore(storeConfig.name, storeConfig.config);
@@ -89,7 +89,7 @@ const IndexedDb = (function() {
 
                 request.onerror = reject;
 
-                request.onsuccess = function(e) {
+                request.onsuccess = function (e) {
                     resolve(e.target.result);
                 };
             });
@@ -127,7 +127,7 @@ const IndexedDb = (function() {
                 const request = store.getAllKeys();
 
                 request.onerror = reject;
-                request.onsuccess = function(e) {
+                request.onsuccess = function (e) {
                     resolve(e.target.result);
                 };
             });
@@ -137,7 +137,7 @@ const IndexedDb = (function() {
 }());
 
 /** Common Functions */
-self.getDateString = function(dateObject) {
+self.getDateString = function (dateObject) {
     let hours = dateObject.getHours();
     if (hours < 10) {
         hours = `0${hours}`;
@@ -152,25 +152,33 @@ self.getDateString = function(dateObject) {
 }
 
 async function sendCachedMessages(databaseRef) {
+    if (window.firebase) {
+        databaseRef = databaseRef || window.firebase.database().ref('/messages');
+    };
+
     await IndexedDb.setupDbConnection(AppConfig.dbName, AppConfig.dbVersion);
     const cachedMessages = await IndexedDb.readRecords(AppConfig.dbConfigs.messagesConfig.name);
     const unsentMessages = cachedMessages.filter(record => record.unsent);
 
     return Promise.all(
         unsentMessages.map(msg =>
-            databaseRef.push(Object.assign({}, msg, { unsent: false })).then(() => {
+            databaseRef.push(Object.assign({}, msg, {
+                unsent: false
+            })).then(() => {
                 IndexedDb.updateRecord(
                     AppConfig.dbConfigs.messagesConfig.name,
-                    Object.assign({}, msg, { unsent: false })
+                    Object.assign({}, msg, {
+                        unsent: false
+                    })
                 );
             })
         )
     );
 }
 
-self.lazyDebounce = function(callback, delay) {
+self.lazyDebounce = function (callback, delay) {
     let timeout = null;
-    return function(e) {
+    return function (e) {
         if (timeout) {
             window.clearTimeout(timeout);
         }
