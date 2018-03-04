@@ -102,20 +102,18 @@ function setUpMessagingPushNotifications(registration) {
     let activeToken;
 
     messaging.useServiceWorker(registration);
-    messaging
-        .requestPermission()
-        .then(() => {
+    Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
             messaging.getToken().then(token => {
                 activeToken = token;
+                console.log(token);
                 firebase
                     .database()
                     .ref(`tokens/${token}`)
                     .set(true);
             });
-        })
-        .catch(() => {
-            console.error('No permission...');
-        });
+        }
+    });
 
     messaging.onTokenRefresh(() => {
         messaging.getToken()
@@ -134,8 +132,6 @@ function setUpMessagingPushNotifications(registration) {
                 console.error('Unable to retrieve refreshed token ', err);
             });
     });
-
-    // messaging.onMessage(e => console.log(e));
 }
 
 function sendMessage(author, text) {
