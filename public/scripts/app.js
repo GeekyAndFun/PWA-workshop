@@ -58,6 +58,10 @@ function sendMessage(author, text) {
         text,
         timestamp: Date.now()
     };
+    if (!navigator.onLine) {
+        IndexedDb.pushRecord(AppConfig.dbConfigs.messagesConfig.name, msg);
+        return Promise.reject();
+    }
 
     return databaseRef.push(msg);
 }
@@ -75,7 +79,7 @@ function onNewMessage(latestTimestamp) {
 
 /** Service Worker */
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('../../service-worker.js').then(() =>{
+    navigator.serviceWorker.register('../../service-worker.js').then(() => {
         // some stuff here done later
     });
 }
