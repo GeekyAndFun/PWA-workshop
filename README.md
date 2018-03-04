@@ -18,5 +18,5 @@ PS: make sure you're using the latest versions of a modern browser: Chrome or Fi
 ### Trainers
 
  * [Alexandru Păvăloi](https://iampava.com)
- * [Alexandru Badea](https://www.facebook.com/badea.alex.90)
+ * [Alexandru Badea](https://twitter.com/AlxBadea)
  * [Ștefan Hagiu](https://twitter.com/stefanhagiu)
