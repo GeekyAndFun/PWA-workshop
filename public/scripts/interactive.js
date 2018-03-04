@@ -47,19 +47,4 @@ window.addEventListener('online', () => {
 });
 
 /** IndexedDB | Author */
-const indexedDbStoreConfigs = Object.keys(AppConfig.dbConfigs).map(key => AppConfig.dbConfigs[key]);
 
-IndexedDb.setupDbStores(AppConfig.dbName, AppConfig.dbVersion, indexedDbStoreConfigs).then(() => {
-    IndexedDb.readRecords(AppConfig.dbConfigs.userConfig.name, 'currentAuthor')
-        .then(author => author || 'John Doe')
-        .then(author => {
-            nameInput.value = author;
-        });
-
-    nameInput.addEventListener(
-        'input',
-        window.lazyDebounce(function() {
-            IndexedDb.updateRecord(AppConfig.dbConfigs.userConfig.name, nameInput.value, 'currentAuthor');
-        }, 500)
-    );
-});
