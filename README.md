@@ -18,5 +18,12 @@ PS: make sure you're using the latest versions of a modern browser: Chrome or Fi
 ### Trainers
 
  * [Alexandru Păvăloi](https://iampava.com)
- * [Alexandru Badea](https://www.facebook.com/badea.alex.90)
+ * [Alexandru Badea](https://twitter.com/AlxBadea)
  * [Ștefan Hagiu](https://twitter.com/stefanhagiu)
+
+### Docs & Slides
+
+* [Workshop docs](https://github.com/GeekyAndFun/pwa-docs)
+* [Day 1 - Slides](http://slides.com/iampava/pwa-workshop#/)
+*  Day 2 - No slides
+* [Day 3 - Slides](http://slides.com/stefanhagiu/indexeddb#/)
