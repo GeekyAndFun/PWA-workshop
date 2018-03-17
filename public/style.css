@@ -1,4 +1,13 @@
 /** General */
+
+:root {
+    --primary-color: #4141ac;
+    --secondary-color: #f1f0ac;
+    /* --secondary-color: #062703; */
+    /* --secondary-color: #000; */
+    --light-color: #fff;
+}
+
 .secondary-font {
     font-family: 'Bungee Shade', cursive;
 }
@@ -18,7 +27,7 @@ header {
     text-align: center;
     font-size: 2em;
     line-height: 80px;
-    background-color: #4141ac;
+    background-color: var(--primary-color);
     color: #fff;
     height: 80px;
     white-space: nowrap;
@@ -35,7 +44,7 @@ body.menu--visible header {
 
 .container {
     max-width: 960px;
-    background-color: #f1f0ac;
+    background-color: var(--secondary-color);
     margin: 0 auto;
     position: relative;
     top: 0;
@@ -45,7 +54,9 @@ body.menu--visible header {
 }
 
 /** Flipper Icon*/
+
 /** https://davidwalsh.name/css-flip */
+
 #headerIconContainer {
     height: 64px;
     width: 64px;
@@ -81,11 +92,13 @@ body.menu--visible #headerIconContainer .flipper {
 #headerIconContainer img:hover {
     box-shadow: 5px 5px 20px black;
 }
+
 .flipper {
     transition: 0.5s;
     transform-style: preserve-3d;
     position: relative;
 }
+
 .front,
 .back {
     backface-visibility: hidden;
@@ -93,9 +106,11 @@ body.menu--visible #headerIconContainer .flipper {
     top: 0;
     left: 0;
 }
+
 .front {
     z-index: 2;
 }
+
 .back {
     transform: rotateY(180deg);
 }
@@ -106,8 +121,9 @@ body.menu--visible #headerIconContainer .flipper {
     padding: 2em;
     box-sizing: border-box;
 }
+
 .msg {
-    background-color: #fff;
+    background-color: var(--light-color);
     border-radius: 1em;
     padding: 0.25em 1em;
     max-width: 450px;
@@ -119,6 +135,7 @@ body.menu--visible #headerIconContainer .flipper {
     margin-bottom: 0;
     font-weight: bold;
 }
+
 .msg__not-sent {
     display: none;
 }
@@ -151,6 +168,7 @@ footer {
     padding: 0 10px;
     box-sizing: border-box;
 }
+
 footer form {
     height: 100%;
 }
@@ -167,6 +185,7 @@ footer textarea {
     border: 0;
     outline: 0;
 }
+
 footer button {
     font-size: 20px;
     width: 30%;
@@ -176,13 +195,14 @@ footer button {
     display: inline-block;
     background: none;
     cursor: pointer;
-    border: 2px solid #4141ac;
+    border: 2px solid var(--primary-color);
     outline: none;
 }
 
 footer button .text {
     display: inline-block;
 }
+
 footer button .spinner {
     display: none;
 }
@@ -198,14 +218,15 @@ footer button.loading .spinner {
 
 footer button:hover {
     color: #fff;
-    background-color: #4141ac;
+    background-color: var(--primary-color);
 }
 
-footer button.loading:hover .spinner > div {
+footer button.loading:hover .spinner>div {
     background-color: #fff;
 }
 
 /** MENU--begin */
+
 #menu {
     position: fixed;
     display: none;
@@ -215,7 +236,7 @@ footer button.loading:hover .spinner > div {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: #4141ac;
+    background-color: var(--primary-color);
     color: #fff;
     text-align: center;
     padding-top: 2em;
@@ -233,25 +254,30 @@ body.menu--visible #menu {
 body.menu--visible footer {
     position: absolute;
 }
+
 #geekPoints {
     font-size: 2em;
     line-height: 1em;
     display: block;
 }
+
 .menu__ranks {
     margin-top: 2em;
     list-style: none;
     box-sizing: border-box;
     text-align: left;
 }
+
 .rank {
     margin: 1.5em 0;
     opacity: 0.4;
 }
+
 .rank.rank--is-current {
     opacity: 1;
     font-size: 1.25em;
 }
+
 .rank .rank__icon {
     width: 4em;
     border-radius: 50%;
@@ -263,21 +289,24 @@ body.menu--visible footer {
     display: inline-block;
     font-family: Arial, Helvetica, sans-serif;
 }
+
 .rank .rank__threshold {
     font-size: 0.75em;
     display: block;
-    color: #f1f0ac;
+    color: var(--secondary-color);
 }
 
 .form-group {
     margin-top: 1em;
     font-size: 1.75em;
 }
+
 .form-group input[type='checkbox'] {
     width: 2em;
     height: 2em;
     vertical-align: bottom;
 }
+
 .form-group input[type='text'] {
     background: none;
     border: 0;
@@ -297,8 +326,9 @@ body.menu--visible footer {
     margin-top: 3em;
     text-align: center;
 }
+
 .attribution a {
-    color: #f1f0ac;
+    color: var(--secondary-color);
 }
 
 #overlay {
@@ -317,17 +347,17 @@ body.menu--visible footer {
 }
 
 /** Spinner - from http://tobiasahlin.com/ */
+
 .spinner {
     margin: 1em auto 0 auto;
     width: 70px;
     text-align: center;
 }
 
-.spinner > div {
+.spinner>div {
     width: 18px;
     height: 18px;
-    background-color: #4141ac;
-
+    background-color: var(--primary-color);
     border-radius: 100%;
     display: inline-block;
     animation: sk-bouncedelay 1.4s infinite ease-in-out both;
@@ -353,6 +383,7 @@ body.menu--visible footer {
 }
 
 /** RESPONSIVE-ness */
+
 @media only screen and (max-width: 400px) {
     .header__text {
         width: initial;
