@@ -6,6 +6,7 @@ const footer = document.getElementsByTagName('footer')[0];
 const sendButton = document.getElementById('sendMessage');
 const nameInput = document.getElementById('nameInput');
 const spinner = document.getElementById('messages-loading');
+const themeChangeCheckbox = document.getElementById('themeCheckbox');
 
 let onScrollCb = function () {};
 
@@ -60,6 +61,8 @@ export function cleanUnsentMessages() {
     });
 }
 
+themeChangeCheckbox.addEventListener('change', toggleSecondaryColor);
+
 /** HELPER FUNCTIONS */
 function onSendMessage(sendMessageCb) {
     sendButton.classList.toggle('loading');
@@ -88,6 +91,11 @@ function onScrollTop(e) {
 
 function toggleLoadingSpinner(visible = true) {
     spinner.style.display = visible ? 'block' : 'none';
+}
+
+function toggleSecondaryColor() {
+    let color = document.documentElement.style.getPropertyValue('--secondary-color') === '#000' ? '#f1f0ac' : '#000';
+    document.documentElement.style.setProperty('--secondary-color', color);
 }
 
 /** Utility Functions */
