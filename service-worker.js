@@ -67,6 +67,7 @@ self.addEventListener('sync', event => {
 
 self.addEventListener('fetch', function onFetch(event) {
     if (event.request.url.indexOf(location.origin) === 0) {
+        console.log(event.request);
         event.respondWith(precacheResourceOrNetwork(event));
     }
 });
@@ -101,9 +102,12 @@ self.addEventListener('push', event => {
 
 function precacheResourceOrNetwork(event) {
     const clonedRequest = event.request.clone();
-    return caches.match(event.request, {
-        cacheName: CACHE_NAME
-    }).then(resp => resp || fetch(clonedRequest));
+    return caches
+        .match(event.request)
+        .then(resp => {
+            debugger;
+            resp || fetch(clonedRequest);
+        });
 }
 
 function displayNotification(payload, tag = 'common-tag') {
